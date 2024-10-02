@@ -34,16 +34,23 @@ class _SignupLoginScreenState extends State<SignupLoginScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Expanded(
+          Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Your Trust Savings',
+                const Text(
+                  'Trust Fund',
                   style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 35,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
+                ),
+                Text(
+                  'Your Financial Fredom',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[300]),
                 ),
               ],
             ),
@@ -83,28 +90,29 @@ class _SignupLoginScreenState extends State<SignupLoginScreen> {
                 Consumer<ConnectLogicProvider>(
                   builder: (context, logic, child) {
                     return ElevatedButton.icon(
-                        icon: const Icon(Icons.account_balance_wallet),
-                        style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 60),
-                            foregroundColor: Colors.white,
-                            backgroundColor: AppColor.primaryColor),
-                        onPressed: () {
-                          logic.connectWithConnectKit();
-                          //navigate();
-                        },
-                        label: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Log in or Sign up',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
+                      icon: const Icon(Icons.account_balance_wallet),
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 60),
+                          foregroundColor: Colors.white,
+                          backgroundColor: AppColor.primaryColor),
+                      onPressed: () {
+                        logic.connectWithConnectKit();
+                        //navigate();
+                      },
+                      label: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Log In or Conect Wallet',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
                             ),
-                          ],
-                        ));
+                          ),
+                        ],
+                      ),
+                    );
                   },
                 ),
                 //const SizedBox(height: 10),

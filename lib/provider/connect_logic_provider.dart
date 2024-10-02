@@ -4,7 +4,7 @@ import 'package:particle_base/particle_base.dart';
 import 'package:particle_auth_core/particle_auth_core.dart';
 import 'package:particle_connect/model/connect_kit_config.dart';
 import 'package:particle_connect/particle_connect.dart';
-import 'package:trustfund_app/screen/home_screen.dart';
+import 'package:trustfund_app/screen/bottom_nav.dart';
 import 'package:trustfund_app/screen/signup_login_screen.dart';
 
 class ConnectLogicProvider extends ChangeNotifier {
@@ -110,7 +110,7 @@ class ConnectLogicProvider extends ChangeNotifier {
 
     try {
       await ParticleConnect.connectWithConnectKitConfig(config);
-      refreshConnectedAccounts().then((value) => const HomeScreen());
+      refreshConnectedAccounts().then((value) => const BottomNav());
       closeConnectWithWalletPage = true;
     } catch (error) {
       throw Exception(error);

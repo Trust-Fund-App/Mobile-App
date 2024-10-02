@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <application
-        android:label="trustfund"
+        android:label="Trust Fund"
         android:supportsRtl="true"
         android:fullBackupContent="@xml/pn_backup_rules"
         tools:replace="android:fullBackupContent,android:label"

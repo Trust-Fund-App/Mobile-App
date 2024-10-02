@@ -8,6 +8,7 @@ import 'package:trustfund_app/utils/akoko_service.dart';
 import 'package:trustfund_app/utils/currency_api.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trustfund_app/widgets/round_button.dart';
 import 'package:uuid/uuid.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -73,12 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
             if (snapshot.hasData && logic.connectedAccounts.isNotEmpty) {
               double nativeToken =
                   (int.parse(logic.tokens['native']) / 1000000000000000000);
-              print('TestMe ${logic.tokens}');
+              //  print('TestMe ${logic.tokens}');
               return SafeArea(
                 child: Column(
                   children: [
                     Expanded(
-                      flex: 2,
+                      flex: 3,
                       child: Container(
                         //color: Colors.black,
                         padding: const EdgeInsets.symmetric(
@@ -213,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           child: const Center(
                                             child: Text(
-                                              '\$ 3000.00',
+                                              '\$ 3420.00',
                                               style: TextStyle(
                                                   fontSize: 18,
                                                   color: Colors.white,
@@ -271,50 +272,125 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Expanded(
-                      flex: 3,
+                      flex: 4,
                       child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(30),
                             topRight: Radius.circular(30),
                           ),
-                          color: Theme.of(context).colorScheme.surface,
+                          color: Colors.white,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        child: Column(
                           children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                // await akokoService.evmSendNative(
-                                //     logic.connectedAccounts.first.publicAddress);
-                                id = uuid.v4();
-                                await akokoService.writeContract(
-                                  wallet: parseWalletType(
-                                      logic.connectedAccounts.first.walletType),
-                                  publicAddress: logic
-                                      .connectedAccounts.first.publicAddress,
-                                  amount: BigInt.from(1000000000000000),
-                                  uuid: uuidToBytes32(id),
-                                  recipient: BigInt.from(0593456789),
-                                );
-                              },
-                              child: const Text('Send to Contract'),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                const RoundButton(
+                                  icon: Icons.account_balance,
+                                  name: 'Add Fund',
+                                  //  onTap: () => infoDialog(),
+                                ),
+                                RoundButton(
+                                  icon: Icons.currency_exchange_outlined,
+                                  name: 'Save Fund',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomeScreen(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const RoundButton(
+                                  icon: Icons.send_to_mobile,
+                                  name: 'Cash Out',
+                                  //onTap: () => infoDialog(),
+                                ),
+                              ],
                             ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                logic.disconnect(
-                                    parseWalletType(
-                                      logic.connectedAccounts.first.walletType,
+                            Column(
+                              children: [
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 25,
+                                            left: 20,
+                                          ),
+                                          child: Text(
+                                            'Recent Transaction',
+                                            style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    logic
-                                        .connectedAccounts.first.publicAddress);
-                              },
-                              child: const Text('Disconnect'),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(
+                                        height: 80,
+                                      ),
+                                      Center(
+                                        child: Text('No Transaction'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
+
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            //   children: [
+                            //     ElevatedButton(
+                            //       onPressed: () async {
+                            //         // await akokoService.evmSendNative(
+                            //         //     logic.connectedAccounts.first.publicAddress);
+                            //         id = uuid.v4();
+                            //         await akokoService.writeContract(
+                            //           wallet: parseWalletType(logic
+                            //               .connectedAccounts.first.walletType),
+                            //           publicAddress: logic.connectedAccounts
+                            //               .first.publicAddress,
+                            //           amount: BigInt.from(1000000000000000),
+                            //           uuid: uuidToBytes32(id),
+                            //           recipient: BigInt.from(0593456789),
+                            //         );
+                            //       },
+                            //       child: const Text('Send to Contract'),
+                            //     ),
+                            //     ElevatedButton(
+                            //       onPressed: () async {
+                            //         logic.disconnect(
+                            //             parseWalletType(
+                            //               logic.connectedAccounts.first
+                            //                   .walletType,
+                            //             ),
+                            //             logic.connectedAccounts.first
+                            //                 .publicAddress);
+                            //       },
+                            //       child: const Text('Disconnect'),
+                            //     ),
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               );
