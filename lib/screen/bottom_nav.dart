@@ -49,9 +49,9 @@ class _BottomNavState extends State<BottomNav> {
           top: -16,
           elevation: 5,
           shadowColor: Colors.grey,
-          activeColor: Theme.of(context).colorScheme.secondary,
-          color: Colors.grey[500],
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          activeColor: Colors.black,
+          color: Colors.grey[600],
+          backgroundColor: Colors.white,
           initialActiveIndex: currentIndex,
           onTap: selectedTap,
           items: const [

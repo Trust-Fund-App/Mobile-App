@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class PriceFeed {
-  Future<double> getGHS() async {
+  Future<double> getUSD() async {
     const String key = '53a2e08c-55ec-4c71-97e4-c868710aecb8';
     const String newUrl =
         'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=ETH&convert=USD';
