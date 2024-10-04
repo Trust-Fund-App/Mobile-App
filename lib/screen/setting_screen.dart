@@ -18,6 +18,8 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       //  backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        backgroundColor: AppColor.primaryColor,
+        foregroundColor: AppColor.white,
         //  backgroundColor: Theme.of(context).colorScheme.background,
         title: const Text('Settings'),
         centerTitle: true,

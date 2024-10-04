@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:particle_connect/particle_connect.dart';
 import 'package:provider/provider.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
+import 'package:trustfund_app/screen/add_fund_screen.dart';
 import 'package:trustfund_app/screen/loading_screen.dart';
+import 'package:trustfund_app/screen/withdraw_screen.dart';
 import 'package:trustfund_app/utils/akoko_service.dart';
 import 'package:trustfund_app/utils/currency_api.dart';
 import 'package:trustfund_app/styles/colors.dart';
@@ -64,9 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     Container(
+                      height: 250,
                       //color: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 30),
+                      margin: const EdgeInsets.only(
+                          left: 20, right: 20, top: 10, bottom: 20),
                       width: double.infinity,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -245,125 +248,168 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
-                          ),
-                          color: Colors.white,
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
                         ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 20),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                const RoundButton(
-                                  icon: Icons.account_balance,
-                                  name: 'Add Fund',
-                                  //  onTap: () => infoDialog(),
-                                ),
-                                RoundButton(
-                                  icon: Icons.currency_exchange_outlined,
-                                  name: 'Save Fund',
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const HomeScreen(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                const RoundButton(
-                                  icon: Icons.send_to_mobile,
-                                  name: 'Cash Out',
-                                  //onTap: () => infoDialog(),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 25,
-                                            left: 20,
-                                          ),
-                                          child: Text(
-                                            'Recent Transaction',
-                                            style: TextStyle(
-                                              color: Colors.grey[600],
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                        color: Colors.grey[100],
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              RoundButton(
+                                icon: Icons.account_balance,
+                                name: 'Add Fund',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AddFundScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              RoundButton(
+                                icon: Icons.currency_exchange_outlined,
+                                name: 'Save Fund',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const HomeScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              RoundButton(
+                                icon: Icons.send_to_mobile,
+                                name: 'Withdraw',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const WithdrawScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+
+                          Column(
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 20,
+                                          left: 20,
+                                          bottom: 10,
+                                        ),
+                                        child: Text(
+                                          'Transactions',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      SizedBox(
-                                        height: 120,
-                                      ),
-                                      Center(
-                                        child: Text('No Transaction'),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                              //  const SizedBox(height: 10),
+                            ],
+                          ),
 
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            //   children: [
-                            //     ElevatedButton(
-                            //       onPressed: () async {
-                            //         // await akokoService.evmSendNative(
-                            //         //     logic.connectedAccounts.first.publicAddress);
-                            //         id = uuid.v4();
-                            //         await akokoService.writeContract(
-                            //           wallet: parseWalletType(logic
-                            //               .connectedAccounts.first.walletType),
-                            //           publicAddress: logic.connectedAccounts
-                            //               .first.publicAddress,
-                            //           amount: BigInt.from(1000000000000000),
-                            //           uuid: uuidToBytes32(id),
-                            //           recipient: BigInt.from(0593456789),
-                            //         );
-                            //       },
-                            //       child: const Text('Send to Contract'),
-                            //     ),
-                            //     ElevatedButton(
-                            //       onPressed: () async {
-                            //         logic.disconnect(
-                            //             parseWalletType(
-                            //               logic.connectedAccounts.first
-                            //                   .walletType,
-                            //             ),
-                            //             logic.connectedAccounts.first
-                            //                 .publicAddress);
-                            //       },
-                            //       child: const Text('Disconnect'),
-                            //     ),
-                            //   ],
-                            // ),
-                          ],
-                        ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //   children: [
+                          //     ElevatedButton(
+                          //       onPressed: () async {
+                          //         // await akokoService.evmSendNative(
+                          //         //     logic.connectedAccounts.first.publicAddress);
+                          //         id = uuid.v4();
+                          //         await akokoService.writeContract(
+                          //           wallet: parseWalletType(logic
+                          //               .connectedAccounts.first.walletType),
+                          //           publicAddress: logic.connectedAccounts
+                          //               .first.publicAddress,
+                          //           amount: BigInt.from(1000000000000000),
+                          //           uuid: uuidToBytes32(id),
+                          //           recipient: BigInt.from(0593456789),
+                          //         );
+                          //       },
+                          //       child: const Text('Send to Contract'),
+                          //     ),
+                          //     ElevatedButton(
+                          //       onPressed: () async {
+                          //         logic.disconnect(
+                          //             parseWalletType(
+                          //               logic.connectedAccounts.first
+                          //                   .walletType,
+                          //             ),
+                          //             logic.connectedAccounts.first
+                          //                 .publicAddress);
+                          //       },
+                          //       child: const Text('Disconnect'),
+                          //     ),
+                          //   ],
+                          // ),
+                        ],
                       ),
                     ),
+                    Expanded(
+                      child: Container(
+                        color: Colors.grey[100],
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            physics: const ClampingScrollPhysics(),
+                            itemCount: 5,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                leading: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade300,
+                                      shape: BoxShape.circle),
+                                  child: const Icon(
+                                    Icons.south_east_outlined,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                title: const Text(
+                                  'Deposit Fund',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                subtitle: const Text('4th October 2024'),
+                                trailing: const Text(
+                                  '+\$10.00',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                    )
                   ],
                 ),
               );

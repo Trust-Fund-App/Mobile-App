@@ -104,7 +104,7 @@ class _SignupLoginScreenState extends State<SignupLoginScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Log In or Conect Wallet',
+                            'Sign In or Conect to Wallet',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,

@@ -48,7 +48,7 @@ class _BottomNavState extends State<BottomNav> {
           height: 56,
           top: -16,
           elevation: 5,
-          shadowColor: Colors.grey,
+          //shadowColor: Colors.grey[400],
           activeColor: Colors.black,
           color: Colors.grey[600],
           backgroundColor: Colors.white,
@@ -56,15 +56,15 @@ class _BottomNavState extends State<BottomNav> {
           onTap: selectedTap,
           items: const [
             TabItem(
-              icon: Icons.home_outlined,
-              title: 'Home',
+              icon: Icons.account_balance_wallet,
+              title: 'Wallet',
             ),
             TabItem(
               icon: Icons.savings,
               title: 'Savings',
             ),
             TabItem(
-              icon: Icons.redeem_outlined,
+              icon: Icons.wallet_giftcard,
               title: 'Rewards',
             ),
             TabItem(
