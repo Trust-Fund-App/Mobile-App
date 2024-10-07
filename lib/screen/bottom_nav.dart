@@ -1,8 +1,8 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:trustfund_app/screen/claim_screen.dart';
+import 'package:trustfund_app/screen/savings_screen.dart';
 import 'package:trustfund_app/screen/home_screen.dart';
-import 'package:trustfund_app/screen/rewardscreen.dart';
+import 'package:trustfund_app/screen/reward_screen.dart';
 import 'package:trustfund_app/screen/setting_screen.dart';
 
 class BottomNav extends StatefulWidget {
@@ -28,7 +28,7 @@ class _BottomNavState extends State<BottomNav> {
 
   List<Widget> tabs = [
     const HomeScreen(),
-    const ClaimScreen(),
+    const SavingsScreen(),
     const RewardScreen(),
     const SettingScreen(),
   ];

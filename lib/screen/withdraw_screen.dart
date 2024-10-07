@@ -7,8 +7,9 @@ class WithdrawScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        backgroundColor: AppColor.primaryColor,
+        backgroundColor: AppColor.black,
         foregroundColor: AppColor.white,
         title: const Text('Withdraw Fund'),
         centerTitle: true,

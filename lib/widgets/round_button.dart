@@ -24,11 +24,11 @@ class RoundButton extends StatelessWidget {
             elevation: 10.0,
             shape: const CircleBorder(),
             child: CircleAvatar(
-              radius: 30.0,
+              radius: 28.0,
               backgroundColor: AppColor.primaryColor,
               child: Icon(
                 icon,
-                size: 28,
+                size: 25,
                 color: Colors.white,
               ),
             ),
@@ -38,7 +38,7 @@ class RoundButton extends StatelessWidget {
         Text(
           name,
           style: const TextStyle(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
             fontSize: 16,
           ),
         ),

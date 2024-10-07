@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/screen/add_fund_screen.dart';
 import 'package:trustfund_app/screen/loading_screen.dart';
+import 'package:trustfund_app/screen/save_fund.dart';
 import 'package:trustfund_app/screen/withdraw_screen.dart';
 import 'package:trustfund_app/utils/akoko_service.dart';
 import 'package:trustfund_app/utils/currency_api.dart';
@@ -50,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     priceFeed = PriceFeed().getUSD();
     return Scaffold(
       backgroundColor: Colors.black,
+
       //backgroundColor: Colors.grey.shade300,
       // appBar: AppBar(
       //   backgroundColor: AppColor.primaryColor,
@@ -66,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     Container(
-                      height: 250,
+                      height: 230,
                       //color: Colors.black,
                       margin: const EdgeInsets.only(
                           left: 20, right: 20, top: 10, bottom: 20),
@@ -155,17 +157,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          Center(
-                            child: Text(
-                              logic.connectedAccounts.first.publicAddress,
-                              style: TextStyle(
-                                color: Colors.grey[300],
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 40),
+                          // Center(
+                          //   child: Text(
+                          //     logic.connectedAccounts.first.publicAddress,
+                          //     style: TextStyle(
+                          //       color: Colors.grey[300],
+                          //       fontSize: 12,
+                          //     ),
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 30),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -283,7 +285,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
+                                      builder: (context) =>
+                                          const SaveFundScreen(),
                                     ),
                                   );
                                 },

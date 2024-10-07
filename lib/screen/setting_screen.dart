@@ -16,31 +16,70 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //  backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: AppColor.primaryColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(25),
+          ),
+        ),
+        backgroundColor: AppColor.black,
         foregroundColor: AppColor.white,
-        //  backgroundColor: Theme.of(context).colorScheme.background,
         title: const Text('Settings'),
         centerTitle: true,
       ),
       body: Column(
         children: [
+          const SizedBox(height: 40),
           Consumer<ConnectLogicProvider>(
             builder: (context, logic, chhild) {
-              return ListTile(
-                iconColor: AppColor.red,
-                leading: const Icon(Icons.logout),
-                title: const Text('Disconnect Account'),
-                trailing: const Icon(Icons.navigate_next),
-                style: ListTileStyle.drawer,
-                onTap: () {
-                  logic.disconnect(
-                      parseWalletType(
-                        logic.connectedAccounts[0].walletType,
-                      ),
-                      logic.connectedAccounts[0].publicAddress);
-                },
+              return Column(
+                children: [
+                  CustListTile(
+                    title: 'Preferences',
+                    icon: Icons.extension,
+                    color: Colors.green,
+                    onTap: () {},
+                  ),
+                  CustListTile(
+                    title: 'Security',
+                    icon: Icons.security,
+                    color: Colors.deepOrange,
+                    onTap: () {},
+                  ),
+                  CustListTile(
+                    title: 'About & Help',
+                    icon: Icons.help,
+                    color: Colors.blue,
+                    onTap: () {},
+                  ),
+                  CustListTile(
+                    title: 'Join Community',
+                    icon: Icons.people,
+                    color: Colors.deepPurple,
+                    onTap: () {},
+                  ),
+                  CustListTile(
+                    title: 'Share App',
+                    icon: Icons.share,
+                    color: Colors.pink,
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 50),
+                  CustListTile(
+                    title: 'Disconnect Account',
+                    icon: Icons.logout,
+                    color: AppColor.red,
+                    onTap: () {
+                      logic.disconnect(
+                          parseWalletType(
+                            logic.connectedAccounts[0].walletType,
+                          ),
+                          logic.connectedAccounts[0].publicAddress);
+                    },
+                  ),
+                ],
               );
             },
           ),
@@ -58,6 +97,52 @@ class _SettingScreenState extends State<SettingScreen> {
           //   style: ListTileStyle.drawer,
           // ),
         ],
+      ),
+    );
+  }
+}
+
+class CustListTile extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final Function()? onTap;
+  const CustListTile({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.color,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      child: Container(
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ListTile(
+          iconColor: color,
+          leading: ClipOval(
+            child: Container(
+              color: Colors.grey[300],
+              height: 45,
+              width: 45,
+              child: Icon(
+                size: 20,
+                icon,
+              ),
+            ),
+          ),
+          title: Text(title),
+          trailing: const Icon(Icons.navigate_next),
+          style: ListTileStyle.drawer,
+          onTap: onTap,
+        ),
       ),
     );
   }

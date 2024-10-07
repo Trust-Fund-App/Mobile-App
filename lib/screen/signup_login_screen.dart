@@ -93,7 +93,7 @@ class _SignupLoginScreenState extends State<SignupLoginScreen> {
                       icon: const Icon(Icons.account_balance_wallet),
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 60),
+                              vertical: 14, horizontal: 40),
                           foregroundColor: Colors.white,
                           backgroundColor: AppColor.primaryColor),
                       onPressed: () {
@@ -104,10 +104,10 @@ class _SignupLoginScreenState extends State<SignupLoginScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Sign In or Conect to Wallet',
+                            'Connect with Email or Wallet',
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],

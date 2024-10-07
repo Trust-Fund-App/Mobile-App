@@ -70,16 +70,16 @@ class ConnectLogicProvider extends ChangeNotifier {
       logo: "assets/images/hori_logo.png",
       //base64 or https
       connectOptions: [
-        //   ConnectOption.SOCIAL,
         ConnectOption.EMAIL,
         ConnectOption.PHONE,
+        ConnectOption.SOCIAL,
         ConnectOption.WALLET,
       ], // Changing the order can affect the interface
       socialProviders: [
         EnableSocialProvider.GOOGLE,
         EnableSocialProvider.FACEBOOK,
         EnableSocialProvider.TWITTER,
-        // EnableSocialProvider.APPLE,
+        //EnableSocialProvider.APPLE,
         EnableSocialProvider.DISCORD,
         EnableSocialProvider.GITHUB,
         EnableSocialProvider.MICROSOFT,
@@ -101,7 +101,7 @@ class ConnectLogicProvider extends ChangeNotifier {
       ],
       //Changing the order can affect the interface
       additionalLayoutOptions: AdditionalLayoutOptions(
-        isCollapseWalletList: false,
+        isCollapseWalletList: true,
         isSplitEmailAndSocial: false,
         isSplitEmailAndPhone: false,
         isHideContinueButton: false,
