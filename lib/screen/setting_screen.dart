@@ -31,7 +31,7 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: 30),
           Consumer<ConnectLogicProvider>(
             builder: (context, logic, chhild) {
               return Column(

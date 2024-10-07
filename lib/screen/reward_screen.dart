@@ -20,6 +20,17 @@ class RewardScreen extends StatelessWidget {
         title: const Text('Rewards'),
         centerTitle: true,
       ),
+      body: const SizedBox(
+        child: Center(
+          child: Text(
+            'No Rewards Available',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

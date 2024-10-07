@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trustfund_app/screen/receive_wallet.dart';
 import 'package:trustfund_app/styles/colors.dart';
 
 class AddFundScreen extends StatelessWidget {
@@ -72,6 +73,14 @@ class AddFundScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
               ),
               trailing: const Icon(Icons.arrow_forward_ios_outlined),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ReceiveWallet(),
+                  ),
+                );
+              },
             ),
           ],
         ),

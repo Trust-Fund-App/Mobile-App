@@ -48,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
     priceFeed = PriceFeed().getUSD();
     return Scaffold(
       backgroundColor: Colors.black,
