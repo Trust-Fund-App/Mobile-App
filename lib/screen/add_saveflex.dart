@@ -7,6 +7,7 @@ import 'package:particle_connect/particle_connect.dart';
 import 'package:provider/provider.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/styles/colors.dart';
+import 'package:trustfund_app/utils/readcontract_service.dart';
 import 'package:trustfund_app/utils/smartcontract_service.dart';
 import 'package:trustfund_app/utils/currency_api.dart';
 import 'package:trustfund_app/widgets/custom_button.dart';
@@ -44,7 +45,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
   bool isListerning = true;
   String? _dropdownDuration;
   Frequency? _dropdownFrequancy;
-
+  late List<dynamic> savingsPlans;
   final _formKey = GlobalKey<FormState>();
   SmartcontractService smartcontractService = SmartcontractService();
 
@@ -57,6 +58,8 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
       fetchPriceData();
     });
     priceFeed = PriceFeed().getUSD();
+    savingsPlans =
+        Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
     _amount.addListener(() {
       setState(() {
         amount = _amount.text;
@@ -65,6 +68,11 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
       });
     });
     super.initState();
+  }
+
+  Future<List<dynamic>> getSavingsplans() async {
+    await Future.delayed(const Duration(seconds: 5));
+    return savingsPlans;
   }
 
   // Future<ReceiptModel> fetchReceipt() async {
@@ -179,17 +187,18 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                                 dropdownColor: Colors.white,
                                 items: const [
                                   DropdownMenuItem(
-                                      value: '120', child: Text('6 Months')),
+                                      value: '15552000',
+                                      child: Text('6 Months')),
                                   DropdownMenuItem(
-                                    value: '12',
+                                    value: '31536000',
                                     child: Text('12 Months'),
                                   ),
                                   DropdownMenuItem(
-                                    value: '24',
+                                    value: '63072000',
                                     child: Text('24 Months'),
                                   ),
                                   DropdownMenuItem(
-                                    value: '48',
+                                    value: '126144000',
                                     child: Text('48 Months'),
                                   ),
                                 ],
@@ -345,9 +354,9 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
 
                               await smartcontractService.writeContract(
                                 wallet: parseWalletType(
-                                    logic.connectedAccounts.first.walletType),
+                                    logic.connectedAccounts[0].walletType),
                                 publicAddress:
-                                    logic.connectedAccounts.first.publicAddress,
+                                    logic.connectedAccounts[0].publicAddress,
                                 amount: BigInt.from(
                                   (gweiAmount * 100000000).round(),
                                 ),
@@ -356,11 +365,12 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                                     SavingsPlanType.flexSave),
                                 frequency:
                                     getFrequencyValue(_dropdownFrequancy!),
-                                duration: BigInt.from(15552000),
+                                duration:
+                                    BigInt.from(int.parse(_dropdownDuration!)),
                               );
 
                               // ignore: use_build_context_synchronously
-                              // customBottomSheet(context);
+                              customBottomSheet(context);
                             } else {
                               return 'Insufficient Fund';
                             }
@@ -396,152 +406,151 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
     );
   }
 
-  // Future<dynamic> customBottomSheet(BuildContext context) {
-  //   setState(() {
-  //     loading = false;
-  //   });
-  //   return showModalBottomSheet(
-  //     isDismissible: false,
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return WillPopScope(
-  //         onWillPop: () async {
-  //           return false;
-  //         },
-  //         child: StreamBuilder<String>(
-  //           stream: fetchData(),
-  //           builder: (context, txnsnapshot) {
-  //             // print('Test7 ${smartcontractService.message}');
+  Future<dynamic> customBottomSheet(BuildContext context) {
+    setState(() {
+      loading = false;
+    });
+    return showModalBottomSheet(
+      isDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: StreamBuilder<String>(
+            stream: fetchData(),
+            builder: (context, txnsnapshot) {
+              // print('Test7 ${smartcontractService.message}');
 
-  //             if (txnsnapshot.hasData &&
-  //                 smartcontractService.message.contains('User rejected')) {
-  //               return const CusBottomSheet(
-  //                 imageUrl: 'assets/images/cancel.png',
-  //                 widget: Column(
-  //                   children: [
-  //                     Text(
-  //                       'Payment Declined',
-  //                       style: TextStyle(
-  //                         fontSize: 20,
-  //                         fontWeight: FontWeight.w500,
-  //                       ),
-  //                     ),
-  //                     Text(
-  //                       'Try Again',
-  //                       style: TextStyle(
-  //                         fontSize: 16,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               );
-  //             } else if (txnsnapshot.hasData &&
-  //                 smartcontractService.message.startsWith('0x')) {
-  //               final Uri url = Uri.parse(
-  //                   '${logicProvider.currChainInfo.blockExplorerUrl}/tx/${smartcontractService.message}');
-  //               return FutureBuilder<ReceiptModel>(
-  //                   future: fetchReceipt(),
-  //                   builder: (context, confsnapshot) {
-  //                     if (confsnapshot.hasData &&
-  //                         confsnapshot.data!.payoutId.isNotEmpty) {
-  //                       isListerning = false;
-  //                       return CusBottomSheet(
-  //                         imageUrl: 'assets/images/sucess.png',
-  //                         widget: Column(
-  //                           children: [
-  //                             const Text(
-  //                               'Payment Completed 🎉',
-  //                               style: TextStyle(
-  //                                 fontSize: 20,
-  //                                 fontWeight: FontWeight.w500,
-  //                               ),
-  //                             ),
-  //                             const SizedBox(height: 8),
-  //                             Text(
-  //                               'You have transfered GH₵$amount to ${recipient.text}',
-  //                               style: const TextStyle(
-  //                                 fontSize: 15,
-  //                               ),
-  //                             ),
-  //                             const SizedBox(height: 10),
-  //                             InkWell(
-  //                               onTap: () {
-  //                                 launchUrl(url);
-  //                               },
-  //                               child: const Text(
-  //                                 'View Transaction',
-  //                                 style: TextStyle(
-  //                                     fontSize: 14,
-  //                                     fontWeight: FontWeight.bold,
-  //                                     color: Color.fromARGB(255, 2, 98, 177)),
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       );
-  //                     } else {
-  //                       return CusBottomSheet(
-  //                         imageUrl: 'assets/images/wait.png',
-  //                         widget: Column(
-  //                           children: [
-  //                             const Text(
-  //                               'Waiting for Confirmation',
-  //                               style: TextStyle(
-  //                                 fontSize: 20,
-  //                                 fontWeight: FontWeight.w500,
-  //                               ),
-  //                             ),
-  //                             Row(
-  //                               mainAxisSize: MainAxisSize.min,
-  //                               children: [
-  //                                 const Text(
-  //                                   'Confirmation in Progress...',
-  //                                   style: TextStyle(
-  //                                     fontSize: 16,
-  //                                   ),
-  //                                 ),
-  //                                 SpinKitCircle(
-  //                                   color: AppColor.black,
-  //                                   size: 25.0,
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             const SizedBox(height: 10),
-  //                             InkWell(
-  //                               onTap: () {
-  //                                 launchUrl(url);
-  //                               },
-  //                               child: const Text(
-  //                                 'View Transaction Status',
-  //                                 style: TextStyle(
-  //                                     fontSize: 14,
-  //                                     fontWeight: FontWeight.bold,
-  //                                     color: Color.fromARGB(255, 2, 98, 177)),
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       );
-  //                     }
-  //                   });
-  //             } else {
-  //               return const CusBottomSheet(
-  //                 imageUrl: 'assets/images/wait.png',
-  //                 widget: Text(
-  //                   'Waiting for Approval....',
-  //                   style: TextStyle(
-  //                     fontSize: 20,
-  //                     fontWeight: FontWeight.w500,
-  //                   ),
-  //                 ),
-  //               );
-  //             }
-  //           },
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+              if (txnsnapshot.hasData &&
+                  smartcontractService.message.contains('User rejected')) {
+                return const CusBottomSheet(
+                  imageUrl: 'assets/images/cancel.png',
+                  widget: Column(
+                    children: [
+                      Text(
+                        'Payment Declined',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        'Try Again',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (txnsnapshot.hasData &&
+                  smartcontractService.message.startsWith('0x')) {
+                final Uri url = Uri.parse(
+                    '${logicProvider.currChainInfo.blockExplorerUrl}/tx/${smartcontractService.message}');
+                return FutureBuilder<List<dynamic>>(
+                    future: getSavingsplans(),
+                    builder: (context, confsnapshot) {
+                      if (confsnapshot.hasData) {
+                        isListerning = false;
+                        return CusBottomSheet(
+                          imageUrl: 'assets/images/sucess.png',
+                          widget: Column(
+                            children: [
+                              const Text(
+                                'Plan Created Successfully🎉',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              // Text(
+                              //   'You have transfered GH₵$amount to ${recipient.text}',
+                              //   style: const TextStyle(
+                              //     fontSize: 15,
+                              //   ),
+                              // ),
+                              const SizedBox(height: 10),
+                              InkWell(
+                                onTap: () {
+                                  launchUrl(url);
+                                },
+                                child: const Text(
+                                  'View Transaction',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 2, 98, 177)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return CusBottomSheet(
+                          imageUrl: 'assets/images/wait.png',
+                          widget: Column(
+                            children: [
+                              const Text(
+                                'Waiting for Confirmation',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'Confirmation in Progress...',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SpinKitCircle(
+                                    color: AppColor.black,
+                                    size: 25.0,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              InkWell(
+                                onTap: () {
+                                  launchUrl(url);
+                                },
+                                child: const Text(
+                                  'View Transaction Status',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 2, 98, 177)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    });
+              } else {
+                return const CusBottomSheet(
+                  imageUrl: 'assets/images/wait.png',
+                  widget: Text(
+                    'Waiting for Approval....',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
 
   Stream<String> fetchData() async* {
     while (isListerning) {

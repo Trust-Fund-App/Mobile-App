@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:particle_connect/particle_connect.dart';
 import 'package:provider/provider.dart';
@@ -22,10 +24,14 @@ class SaveFlexRecords extends StatefulWidget {
 class _SaveFlexRecordsState extends State<SaveFlexRecords> {
   late List<Account> account;
   late List<dynamic> savingsPlans;
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      getSavingsplans();
+    });
     account = Provider.of<ConnectLogicProvider>(context, listen: false)
         .connectedAccounts;
     final provider = Provider.of<ReadcontractService>(context, listen: false);
@@ -39,6 +45,12 @@ class _SaveFlexRecordsState extends State<SaveFlexRecords> {
   Future<List<dynamic>> getSavingsplans() async {
     await Future.delayed(const Duration(seconds: 5));
     return savingsPlans;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 
   SavingsPlanType getSavingsPlanTypeFromUint8(int value) {
@@ -95,9 +107,9 @@ class _SaveFlexRecordsState extends State<SaveFlexRecords> {
                     const SizedBox(height: 20),
                     Expanded(
                       child: ListView.builder(
+                          //reverse: true,
                           itemCount: provider.savingsPlans[0].length,
                           itemBuilder: (context, index) {
-                            print(' Test4 ${provider.savingsPlans[0].length}');
                             List savingsPlan = provider.savingsPlans[0][index];
                             return Padding(
                               padding: const EdgeInsets.symmetric(

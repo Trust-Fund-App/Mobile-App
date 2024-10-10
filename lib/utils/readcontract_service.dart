@@ -11,100 +11,104 @@ class ReadcontractService extends ChangeNotifier {
   List<dynamic> get savingsPlans => _savingsPlans;
 
   Future<List<dynamic>> readSavingsPlansContract(String publicAddress) async {
-    String contractAddress = SmartcontractAbi.contractAddress;
-    String methodName = "getSavingsPlans";
-    List<Object> parameters = <Object>[]; // this is the method params.
+    try {
+      String contractAddress = SmartcontractAbi.contractAddress;
+      String methodName = "getSavingsPlans";
+      List<Object> parameters = <Object>[]; // this is the method params.
 
-    // ABI for the getSavingsPlans function
-    final abi = ContractAbi.fromJson(
-        jsonEncode([
-          {
-            "inputs": [],
-            "name": "getSavingsPlans",
-            "outputs": [
-              {
-                "components": [
-                  {
-                    "internalType": "uint256",
-                    "name": "savingsPlanId",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint8",
-                    "name": "savingsPlanType",
-                    "type": "uint8"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "startDate",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "maturityDate",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "interestRate",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "interestEarned",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint8",
-                    "name": "frequency",
-                    "type": "uint8"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "duration",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "timestamp",
-                    "type": "uint256"
-                  }
-                ],
-                "internalType": "tuple[]",
-                "name": "",
-                "type": "tuple[]"
-              }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-          }
-        ]),
-        'SavingsPlan');
+      // ABI for the getSavingsPlans function
+      final abi = ContractAbi.fromJson(
+          jsonEncode([
+            {
+              "inputs": [],
+              "name": "getSavingsPlans",
+              "outputs": [
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
+                      "name": "savingsPlanId",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint8",
+                      "name": "savingsPlanType",
+                      "type": "uint8"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "startDate",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "maturityDate",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "interestRate",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "interestEarned",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint8",
+                      "name": "frequency",
+                      "type": "uint8"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "duration",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "amount",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "timestamp",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "tuple[]",
+                  "name": "",
+                  "type": "tuple[]"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            }
+          ]),
+          'SavingsPlan');
 
-    // Example ABI-encoded response from the contract (replace with actual response)
-    final abiJsonString = jsonEncode(SmartcontractAbi.contractABI);
-    final result = await EvmService.readContract(publicAddress, BigInt.zero,
-        contractAddress, methodName, parameters, abiJsonString);
+      // Example ABI-encoded response from the contract (replace with actual response)
+      final abiJsonString = jsonEncode(SmartcontractAbi.contractABI);
+      final result = await EvmService.readContract(publicAddress, BigInt.zero,
+          contractAddress, methodName, parameters, abiJsonString);
 
-    final encodedResponse = result; // Truncated for brevity
+      final encodedResponse = result; // Truncated for brevity
 
-    // Define the function
-    final function =
-        abi.functions.firstWhere((fn) => fn.name == "getSavingsPlans");
+      // Define the function
+      final function =
+          abi.functions.firstWhere((fn) => fn.name == "getSavingsPlans");
 
-    // Decode the ABI-encoded response
-    final decoded = function.decodeReturnValues(encodedResponse);
+      // Decode the ABI-encoded response
+      final decoded = function.decodeReturnValues(encodedResponse);
 
-    decoded.map((m) => _savingsPlans.add(decoded[0])).toList();
-    //  print('Old $savingsPlans');
-    isloading = false;
-    notifyListeners();
-    return decoded;
+      decoded.map((m) => _savingsPlans.add(decoded[0])).toList();
+      //  print('Old $savingsPlans');
+      isloading = false;
+      notifyListeners();
+      return decoded;
+    } catch (error) {
+      throw Exception(error);
+    }
   }
 
   // Helper to convert Uint8List to hex

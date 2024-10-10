@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:particle_connect/model/account.dart';
@@ -27,6 +29,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Future<double> priceFeed;
   late String id;
+  late Timer _timer;
   late List<Account> account;
   //late Future<List<dynamic>> savingsPlans;
 
@@ -40,8 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
         .connectedAccounts;
     final provider = Provider.of<ReadcontractService>(context, listen: false);
     provider.readSavingsPlansContract(account[0].publicAddress);
+    Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
     Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
-
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      fetchPriceFeed();
+    });
     fetchPriceFeed();
     // getSavingsplans();
   }
@@ -52,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Future<List<dynamic>> getSavingsplans() async {
-  //   //await Future.delayed(const Duration(seconds: 10));
+  //   await Future.delayed(const Duration(seconds: 10));
   //   return savingsPlans;
   // }
 
@@ -61,6 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
     var bytes32 = Uint8List(32);
     bytes32.setRange(0, uuidBytes.length, uuidBytes);
     return bytes32;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 
   SavingsPlanType getSavingsPlanTypeFromUint8(int value) {
@@ -240,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         child: const Center(
                                           child: Text(
-                                            '\$ 3420.00',
+                                            '0.0134 ETH',
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.white,
@@ -423,9 +435,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Container(
                         color: Colors.grey[100],
                         child: ListView.builder(
+                            // reverse: true,
                             shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            physics: const ClampingScrollPhysics(),
                             itemCount: provider.savingsPlans[0].length,
                             itemBuilder: (context, index) {
                               List savingsPlan =

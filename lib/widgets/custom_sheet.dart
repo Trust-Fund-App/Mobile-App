@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
-import 'package:trustfund_app/screen/home_screen.dart';
+import 'package:trustfund_app/screen/bottom_nav.dart';
 import 'package:trustfund_app/widgets/custom_button.dart';
 
 class CusBottomSheet extends StatelessWidget {
@@ -35,14 +35,17 @@ class CusBottomSheet extends StatelessWidget {
                 name: 'Close',
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushReplacement(
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const BottomNav(),
+                  //   ),
+                  // );
+                  Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HomeScreen()));
-                  // Navigator.pushAndRemoveUntil(
-                  //     context,
-                  //     MaterialPageRoute(builder: (context) => const BottomNav()),
-                  //     (route) => false);
+                          builder: (context) => const BottomNav()),
+                      (route) => false);
                 },
               );
             },
