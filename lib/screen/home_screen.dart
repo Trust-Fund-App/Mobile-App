@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:particle_connect/particle_connect.dart';
+import 'package:particle_connect/model/account.dart';
 import 'package:provider/provider.dart';
+import 'package:timestamp_to_string/timestamp_to_string.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/screen/add_fund_screen.dart';
 import 'package:trustfund_app/screen/loading_screen.dart';
 import 'package:trustfund_app/screen/save_fund.dart';
 import 'package:trustfund_app/screen/withdraw_screen.dart';
-import 'package:trustfund_app/utils/akoko_service.dart';
+import 'package:trustfund_app/utils/readcontract_service.dart';
+import 'package:trustfund_app/utils/smartcontract_service.dart';
 import 'package:trustfund_app/utils/currency_api.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/widgets/round_button.dart';
 import 'package:uuid/uuid.dart';
+
+enum SavingsPlanType { flexSave, secureSave, goalSave }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,21 +27,34 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Future<double> priceFeed;
   late String id;
+  late List<Account> account;
+  //late Future<List<dynamic>> savingsPlans;
 
   Uuid uuid = const Uuid();
-  AkokoService akokoService = AkokoService();
+  SmartcontractService smartcontractService = SmartcontractService();
 
   @override
   void initState() {
     super.initState();
+    account = Provider.of<ConnectLogicProvider>(context, listen: false)
+        .connectedAccounts;
+    final provider = Provider.of<ReadcontractService>(context, listen: false);
+    provider.readSavingsPlansContract(account[0].publicAddress);
     Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
+
     fetchPriceFeed();
+    // getSavingsplans();
   }
 
   Future<double> fetchPriceFeed() async {
     await Future.delayed(const Duration(seconds: 5));
     return priceFeed;
   }
+
+  // Future<List<dynamic>> getSavingsplans() async {
+  //   //await Future.delayed(const Duration(seconds: 10));
+  //   return savingsPlans;
+  // }
 
   Uint8List uuidToBytes32(String uuid) {
     var uuidBytes = Uuid.parse(uuid);
@@ -46,17 +63,44 @@ class _HomeScreenState extends State<HomeScreen> {
     return bytes32;
   }
 
+  SavingsPlanType getSavingsPlanTypeFromUint8(int value) {
+    switch (value) {
+      case 0:
+        return SavingsPlanType.flexSave;
+      case 1:
+        return SavingsPlanType.secureSave;
+      case 2:
+        return SavingsPlanType.goalSave;
+      default:
+        throw Exception('Unknown SavingsPlanType: $value');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ReadcontractService>(context, listen: false);
     Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
     priceFeed = PriceFeed().getUSD();
     return Scaffold(
       backgroundColor: Colors.black,
 
       //backgroundColor: Colors.grey.shade300,
-      // appBar: AppBar(
-      //   backgroundColor: AppColor.primaryColor,
-      // ),
+      appBar: AppBar(
+        foregroundColor: AppColor.white,
+        backgroundColor: AppColor.black,
+        leading: IconButton(
+          iconSize: 26,
+          onPressed: () {},
+          icon: const Icon(Icons.apps),
+        ),
+        actions: [
+          IconButton(
+            iconSize: 26,
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+        ],
+      ),
       body: Consumer<ConnectLogicProvider>(
         builder: (context, logic, child) => FutureBuilder<double>(
           future: fetchPriceFeed(),
@@ -69,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     Container(
-                      height: 230,
+                      height: 200,
                       //color: Colors.black,
                       margin: const EdgeInsets.only(
                           left: 20, right: 20, top: 10, bottom: 20),
@@ -77,42 +121,43 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SizedBox(
-                                width: 30.0,
-                                height: 30.0,
-                                child: ClipOval(
-                                  child: logic.connectedAccounts[0].icons !=
-                                              null &&
-                                          logic.connectedAccounts[0].icons!
-                                              .isNotEmpty &&
-                                          parseWalletType(logic
-                                                  .connectedAccounts[0]
-                                                  .walletType) !=
-                                              WalletType.authCore
-                                      ? Image.network(
-                                          logic.connectedAccounts[0].icons!
-                                                  .firstOrNull ??
-                                              '',
-                                          fit: BoxFit.fill,
-                                        )
-                                      : logic.connectedAccounts[0].icons !=
-                                                  null &&
-                                              logic.connectedAccounts.first
-                                                  .icons!.isNotEmpty &&
-                                              parseWalletType(logic
-                                                      .connectedAccounts[0]
-                                                      .walletType) ==
-                                                  WalletType.authCore
-                                          ? Image.asset(
-                                              'assets/images/round_logo.png',
-                                              fit: BoxFit.cover,
-                                            )
-                                          : const SizedBox.shrink(),
-                                ),
-                              ),
+                              // SizedBox(
+                              //   width: 30.0,
+                              //   height: 30.0,
+                              //   child: ClipOval(
+                              //     child: logic.connectedAccounts[0].icons !=
+                              //                 null &&
+                              //             logic.connectedAccounts[0].icons!
+                              //                 .isNotEmpty &&
+                              //             parseWalletType(logic
+                              //                     .connectedAccounts[0]
+                              //                     .walletType) !=
+                              //                 WalletType.authCore
+                              //         ? Image.network(
+                              //             logic.connectedAccounts[0].icons!
+                              //                     .firstOrNull ??
+                              //                 '',
+                              //             fit: BoxFit.fill,
+                              //           )
+                              //         : logic.connectedAccounts[0].icons !=
+                              //                     null &&
+                              //                 logic.connectedAccounts.first
+                              //                     .icons!.isNotEmpty &&
+                              //                 parseWalletType(logic
+                              //                         .connectedAccounts[0]
+                              //                         .walletType) ==
+                              //                     WalletType.authCore
+                              //             ? Image.asset(
+                              //                 'assets/images/round_logo.png',
+                              //                 fit: BoxFit.cover,
+                              //               )
+                              //             : const SizedBox.shrink(),
+                              //   ),
+                              // ),
+
                               // const Center(
                               //   child: Text(
                               //     'Trust Fund',
@@ -122,13 +167,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               //         fontWeight: FontWeight.w600),
                               //   ),
                               // ),
-                              Image.network(
-                                logic.currChainInfo.icon,
-                                height: 30,
-                              ),
+                              // Image.network(
+                              //   logic.currChainInfo.icon,
+                              //   height: 30,
+                              // ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          // const SizedBox(height: 10),
                           Center(
                             child: Text(
                               '\$${((snapshot.data ?? 0) * double.parse(nativeToken.toString())).toStringAsFixed(2)}',
@@ -145,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  nativeToken.toString(),
+                                  nativeToken.toStringAsFixed(5),
                                   style: const TextStyle(
                                     color: Colors.white,
                                   ),
@@ -342,10 +387,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           //   children: [
                           //     ElevatedButton(
                           //       onPressed: () async {
-                          //         // await akokoService.evmSendNative(
+                          //         // await smartcontractService.evmSendNative(
                           //         //     logic.connectedAccounts.first.publicAddress);
                           //         id = uuid.v4();
-                          //         await akokoService.writeContract(
+                          //         await smartcontractService.writeContract(
                           //           wallet: parseWalletType(logic
                           //               .connectedAccounts.first.walletType),
                           //           publicAddress: logic.connectedAccounts
@@ -381,8 +426,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             physics: const ClampingScrollPhysics(),
-                            itemCount: 5,
+                            itemCount: provider.savingsPlans[0].length,
                             itemBuilder: (context, index) {
+                              List savingsPlan =
+                                  provider.savingsPlans[0][index];
+
                               return ListTile(
                                 leading: Container(
                                   height: 45,
@@ -395,22 +443,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: Colors.green,
                                   ),
                                 ),
-                                title: const Text(
-                                  'Deposit Fund',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                title: Text(
+                                  getSavingsPlanTypeFromUint8(
+                                    int.parse(
+                                      savingsPlan[1].toString(),
+                                    ),
+                                  ).name,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: const Text('4th October 2024'),
-                                trailing: const Text(
-                                  '+\$10.00',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                subtitle: TimestampToString.dddmmmddyyyy(
+                                  savingsPlan[9].toString(),
+                                ),
+                                trailing: Text(
+                                  '${(double.parse(
+                                        savingsPlan[8].toString(),
+                                      ) / 1000000000000000000).toStringAsFixed(4)} ETH',
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               );
+
+                              //     return null;
                             }),
                       ),
                     )

@@ -5,8 +5,18 @@ import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/widgets/address_qr_wid.dart';
 
-class ReceiveWallet extends StatelessWidget {
+class ReceiveWallet extends StatefulWidget {
   const ReceiveWallet({super.key});
+
+  @override
+  State<ReceiveWallet> createState() => _ReceiveWalletState();
+}
+
+class _ReceiveWalletState extends State<ReceiveWallet> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

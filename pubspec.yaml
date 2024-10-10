@@ -40,13 +40,17 @@ dependencies:
   animated_text_kit: ^4.2.2
   flutter_native_splash: ^2.4.0
   http: ^1.2.2
-  uuid: ^4.5.0
+  uuid: ^4.5.1
   shared_preferences: ^2.2.3
   flutter_dotenv: ^5.1.0
   convex_bottom_bar: ^3.2.0
   qr_flutter: ^4.1.0
   clipboard: ^0.1.3
   share_plus: ^10.0.2
+  url_launcher: ^6.3.1
+  web3dart: ^2.7.3
+  timestamp_to_string: ^0.0.1
+  step_progress_indicator: ^1.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

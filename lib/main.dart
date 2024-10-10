@@ -4,6 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/screen/auth_screen.dart';
+import 'package:trustfund_app/utils/readcontract_service.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,9 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(
           create: (context) => ConnectLogicProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ReadcontractService(),
         ),
       ],
       child: const MaterialApp(

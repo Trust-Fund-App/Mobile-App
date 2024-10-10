@@ -13,7 +13,7 @@ class CustomButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
         backgroundColor: AppColor.primaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 140, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 120, vertical: 12),
       ),
       child: Text(
         name,

@@ -20,8 +20,15 @@ class CustomTextField extends StatelessWidget {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
         hintText: hintText,
+        hintStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
       ),
     );
   }
