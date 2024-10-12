@@ -1,10 +1,9 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:trustfund_app/screen/savings_screen.dart';
 import 'package:trustfund_app/screen/home_screen.dart';
-import 'package:trustfund_app/screen/reward_screen.dart';
+import 'package:trustfund_app/screen/claim_screen.dart';
+import 'package:trustfund_app/screen/savings.dart';
 import 'package:trustfund_app/screen/setting_screen.dart';
-import 'package:trustfund_app/screen/tab/saveflex_records.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -29,8 +28,8 @@ class _BottomNavState extends State<BottomNav> {
 
   List<Widget> tabs = [
     const HomeScreen(),
-    const SaveFlexRecords(),
-    const RewardScreen(),
+    const SavingsRecords(),
+    const ClaimScreen(),
     const SettingScreen(),
   ];
 
@@ -66,7 +65,7 @@ class _BottomNavState extends State<BottomNav> {
             ),
             TabItem(
               icon: Icons.wallet_giftcard,
-              title: 'Rewards',
+              title: 'Claims',
             ),
             TabItem(
               icon: Icons.settings,

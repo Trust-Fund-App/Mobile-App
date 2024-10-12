@@ -7,7 +7,7 @@ import 'package:particle_connect/particle_connect.dart';
 import 'package:provider/provider.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/styles/colors.dart';
-import 'package:trustfund_app/utils/readcontract_service.dart';
+import 'package:trustfund_app/provider/readcontract_service.dart';
 import 'package:trustfund_app/utils/smartcontract_service.dart';
 import 'package:trustfund_app/utils/currency_api.dart';
 import 'package:trustfund_app/widgets/custom_button.dart';

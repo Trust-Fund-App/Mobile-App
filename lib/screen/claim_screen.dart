@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trustfund_app/styles/colors.dart';
 
-class RewardScreen extends StatelessWidget {
-  const RewardScreen({super.key});
+class ClaimScreen extends StatelessWidget {
+  const ClaimScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +17,18 @@ class RewardScreen extends StatelessWidget {
         ),
         backgroundColor: AppColor.black,
         foregroundColor: AppColor.white,
-        title: const Text('Rewards'),
+        title: const Text('Claims'),
         centerTitle: true,
       ),
       body: const SizedBox(
         child: Center(
-          child: Text(
-            'No Rewards Available',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+          child: Center(
+            child: Text(
+              'No Claims Available',
+              style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),

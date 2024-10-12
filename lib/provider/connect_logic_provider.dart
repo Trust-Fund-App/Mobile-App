@@ -52,7 +52,9 @@ class ConnectLogicProvider extends ChangeNotifier {
       redirect: 'https://www.trustfund.xyz',
     );
 
-    ParticleConnect.init(currChainInfo, dappInfo, Env.dev);
+    final config = SecurityAccountConfig(0, 0);
+    ParticleBase.setSecurityAccountConfig(config);
+    ParticleConnect.init(currChainInfo, dappInfo, Env.staging);
     ParticleAuthCore.init();
 
     // List<ChainInfo> chainInfos = <ChainInfo>[
@@ -115,6 +117,7 @@ class ConnectLogicProvider extends ChangeNotifier {
     } catch (error) {
       throw Exception(error);
     }
+    notifyListeners();
   }
 
   Future<void> refreshConnectedAccounts() async {
@@ -160,5 +163,6 @@ class ConnectLogicProvider extends ChangeNotifier {
     } catch (error) {
       throw Exception(error);
     }
+    notifyListeners();
   }
 }

@@ -10,7 +10,7 @@ import 'package:trustfund_app/screen/add_fund_screen.dart';
 import 'package:trustfund_app/screen/loading_screen.dart';
 import 'package:trustfund_app/screen/save_fund.dart';
 import 'package:trustfund_app/screen/withdraw_screen.dart';
-import 'package:trustfund_app/utils/readcontract_service.dart';
+import 'package:trustfund_app/provider/readcontract_service.dart';
 import 'package:trustfund_app/utils/smartcontract_service.dart';
 import 'package:trustfund_app/utils/currency_api.dart';
 import 'package:trustfund_app/styles/colors.dart';
@@ -31,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late String id;
   late Timer _timer;
   late List<Account> account;
-  //late Future<List<dynamic>> savingsPlans;
 
   Uuid uuid = const Uuid();
   SmartcontractService smartcontractService = SmartcontractService();
@@ -43,13 +42,23 @@ class _HomeScreenState extends State<HomeScreen> {
         .connectedAccounts;
     final provider = Provider.of<ReadcontractService>(context, listen: false);
     provider.readSavingsPlansContract(account[0].publicAddress);
-    Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
-    Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
+    final providers = Provider.of<ReadcontractService>(context, listen: false);
+    providers.readTotalSavingsContract(account[0].publicAddress);
+    final creditScore =
+        Provider.of<ReadcontractService>(context, listen: false);
+    creditScore.readCreditScoreContract(account[0].publicAddress);
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
       fetchPriceFeed();
     });
     fetchPriceFeed();
     // getSavingsplans();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
   }
 
   Future<double> fetchPriceFeed() async {
@@ -120,6 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
             if (snapshot.hasData && logic.connectedAccounts.isNotEmpty) {
               double nativeToken =
                   (int.parse(logic.tokens['native']) / 1000000000000000000);
+              String totalAmount =
+                  (double.parse(provider.totalSavings[0].toString()) /
+                          1000000000000000000)
+                      .toStringAsFixed(4);
               //  print('TestMe ${logic.tokens}');
               return SafeArea(
                 child: Column(
@@ -250,10 +263,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           borderRadius:
                                               BorderRadius.circular(5),
                                         ),
-                                        child: const Center(
+                                        child: Center(
                                           child: Text(
-                                            '0.0134 ETH',
-                                            style: TextStyle(
+                                            '$totalAmount ${logic.currChainInfo.nativeCurrency.symbol}',
+                                            style: const TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w600),
@@ -289,14 +302,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                           borderRadius:
                                               BorderRadius.circular(5),
                                         ),
-                                        child: const Center(
-                                          child: Text(
-                                            '100%',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600),
-                                          ),
+                                        child: Center(
+                                          child:
+                                              provider.savingsPlans[0].length <
+                                                      1
+                                                  ? const Text(
+                                                      '0%',
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    )
+                                                  : Text(
+                                                      '${provider.creditScore[0].toString()}%',
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
                                         ),
                                       ),
                                     ],
@@ -432,54 +457,67 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Expanded(
-                      child: Container(
-                        color: Colors.grey[100],
-                        child: ListView.builder(
-                            // reverse: true,
-                            shrinkWrap: true,
-                            itemCount: provider.savingsPlans[0].length,
-                            itemBuilder: (context, index) {
-                              List savingsPlan =
-                                  provider.savingsPlans[0][index];
-
-                              return ListTile(
-                                leading: Container(
-                                  height: 45,
-                                  width: 45,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.shade300,
-                                      shape: BoxShape.circle),
-                                  child: const Icon(
-                                    Icons.south_east_outlined,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                title: Text(
-                                  getSavingsPlanTypeFromUint8(
-                                    int.parse(
-                                      savingsPlan[1].toString(),
-                                    ),
-                                  ).name,
-                                  style: const TextStyle(
-                                      fontSize: 16,
+                      child: provider.savingsPlans.isEmpty
+                          ? Container(
+                              color: Colors.grey[100],
+                              child: const Center(
+                                child: Text(
+                                  'No Transactions Available',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black54,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: TimestampToString.dddmmmddyyyy(
-                                  savingsPlan[9].toString(),
-                                ),
-                                trailing: Text(
-                                  '${(double.parse(
-                                        savingsPlan[8].toString(),
-                                      ) / 1000000000000000000).toStringAsFixed(4)} ETH',
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              );
+                              ),
+                            )
+                          : Container(
+                              color: Colors.grey[100],
+                              child: ListView.builder(
+                                  // reverse: true,
+                                  shrinkWrap: true,
+                                  itemCount: provider.savingsPlans[0].length,
+                                  itemBuilder: (context, index) {
+                                    List savingsPlan =
+                                        provider.savingsPlans[0][index];
 
-                              //     return null;
-                            }),
-                      ),
+                                    return ListTile(
+                                      leading: Container(
+                                        height: 45,
+                                        width: 45,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey.shade300,
+                                            shape: BoxShape.circle),
+                                        child: const Icon(
+                                          Icons.south_east_outlined,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        getSavingsPlanTypeFromUint8(
+                                          int.parse(
+                                            savingsPlan[1].toString(),
+                                          ),
+                                        ).name,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      subtitle: TimestampToString.dddmmmddyyyy(
+                                        savingsPlan[9].toString(),
+                                      ),
+                                      trailing: Text(
+                                        '${(double.parse(
+                                              savingsPlan[8].toString(),
+                                            ) / 1000000000000000000).toStringAsFixed(4)} ${logic.currChainInfo.nativeCurrency.symbol}',
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    );
+
+                                    //     return null;
+                                  }),
+                            ),
                     )
                   ],
                 ),
@@ -490,26 +528,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             } else {
               return const LoadScreen();
-
-              // Center(
-              //   child: Column(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: [
-              //       SpinKitFadingCircle(
-              //         color: AppColor.primaryColor,
-              //         size: 50.0,
-              //       ),
-              //       const SizedBox(height: 6),
-              //       const Text(
-              //         'Loading....',
-              //         style: TextStyle(
-              //           fontSize: 15,
-              //           fontWeight: FontWeight.w600,
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // );
             }
           },
         ),

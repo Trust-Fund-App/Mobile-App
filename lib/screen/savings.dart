@@ -14,14 +14,14 @@ enum SavingsPlanType { flexSave, secureSave, goalSave }
 
 enum Frequency { single, daily, weekly, monthly }
 
-class SaveFlexRecords extends StatefulWidget {
-  const SaveFlexRecords({super.key});
+class SavingsRecords extends StatefulWidget {
+  const SavingsRecords({super.key});
 
   @override
-  State<SaveFlexRecords> createState() => _SaveFlexRecordsState();
+  State<SavingsRecords> createState() => _SavingsRecordsState();
 }
 
-class _SaveFlexRecordsState extends State<SaveFlexRecords> {
+class _SavingsRecordsState extends State<SavingsRecords> {
   late List<Account> account;
   late List<dynamic> savingsPlans;
 
@@ -71,7 +71,6 @@ class _SaveFlexRecordsState extends State<SaveFlexRecords> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ReadcontractService>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
@@ -86,40 +85,49 @@ class _SaveFlexRecordsState extends State<SaveFlexRecords> {
         title: const Text('Savings Plan'),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<dynamic>>(
-        future: getSavingsplans(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                const SizedBox(height: 20),
-                Expanded(
-                  child: provider.savingsPlans[0].length < 1
-                      ? Container(
-                          color: Colors.grey[100],
-                          child: const Center(
-                            child: Text(
-                              'No Savings Plan Available',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        )
-                      : ListView.builder(
+      body: Consumer<ReadcontractService>(
+        builder: (context, logic, child) {
+          return FutureBuilder<List<dynamic>>(
+            future: getSavingsplans(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData & logic.savingsPlans.isEmpty) {
+                return Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Expanded(
+                        child: Container(
+                      color: Colors.grey[100],
+                      child: const Center(
+                        child: Text(
+                          'No Savings Plan Available',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )),
+                  ],
+                );
+              } else if (snapshot.hasData & logic.savingsPlans.isNotEmpty) {
+                return Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: ListView.builder(
                           //reverse: true,
-                          itemCount: provider.savingsPlans[0].length,
+                          itemCount: logic.savingsPlans[0].length,
                           itemBuilder: (context, index) {
-                            List savingsPlan = provider.savingsPlans[0][index];
+                            List savingsPlan = logic.savingsPlans[0][index];
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 18),
                               child: Container(
                                 padding: const EdgeInsets.all(20),
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20)),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 height: 230,
                                 width: double.infinity,
                                 child: Column(
@@ -287,16 +295,14 @@ class _SaveFlexRecordsState extends State<SaveFlexRecords> {
                               ),
                             );
                           }),
-                ),
-              ],
-            );
-          } else if (snapshot.hasData) {
-            return const Center(
-              child: Text('Network Error'),
-            );
-          } else {
-            return const LoadScreen();
-          }
+                    ),
+                  ],
+                );
+              } else {
+                return const LoadScreen();
+              }
+            },
+          );
         },
       ),
     );

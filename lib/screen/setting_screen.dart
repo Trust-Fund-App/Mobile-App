@@ -83,19 +83,6 @@ class _SettingScreenState extends State<SettingScreen> {
               );
             },
           ),
-          // ListTile(
-          //   iconColor: AppColor.primaryColor,
-          //   leading: const Icon(Icons.dark_mode),
-          //   title: const Text('Dark Mode'),
-          //   trailing: CupertinoSwitch(
-          //     value:
-          //         Provider.of<ThemeProvider>(context, listen: false).isDarkMode,
-          //     onChanged: (value) =>
-          //         Provider.of<ThemeProvider>(context, listen: false)
-          //             .toggleTheme(),
-          //   ),
-          //   style: ListTileStyle.drawer,
-          // ),
         ],
       ),
     );

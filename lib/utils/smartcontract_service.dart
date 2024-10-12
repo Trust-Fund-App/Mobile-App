@@ -10,7 +10,6 @@ class SmartcontractService {
   Future<String> writeContract({
     required WalletType wallet,
     required String publicAddress,
-    //required Uint8List uuid,
     required int savingsPlanType,
     required int frequency,
     required BigInt duration,
@@ -19,8 +18,6 @@ class SmartcontractService {
     String contractAddress = SmartcontractAbi.contractAddress;
     String methodName = "createSavingsPlan";
 
-    // Convert UUID and recipient to hexadecimal strings
-    //String uuidHex = uint8ListToHex(uuid);
     String savingsPlanTypeHex = intToHex(savingsPlanType);
     String frequencyHex = intToHex(frequency);
     String durationHex = bigIntToHex(duration);
@@ -28,7 +25,6 @@ class SmartcontractService {
 
     // this is the method params.
     List<Object> params = <Object>[
-      //uuidHex,
       savingsPlanTypeHex,
       frequencyHex,
       durationHex,
@@ -52,7 +48,7 @@ class SmartcontractService {
     //     await EvmService.getTransactionsByAddress(publicAddress);
     // print('Test0 ${transaction[0]['hash']}');
     message = signature;
-    print('Test123 $message');
+    // print('Test123 $message');
     return result;
   }
 

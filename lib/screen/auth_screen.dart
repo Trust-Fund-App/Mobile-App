@@ -4,7 +4,7 @@ import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/screen/bottom_nav.dart';
 import 'package:trustfund_app/screen/signup_login_screen.dart';
 import 'package:trustfund_app/screen/splash_screen.dart';
-import 'package:trustfund_app/utils/readcontract_service.dart';
+import 'package:trustfund_app/provider/readcontract_service.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -21,8 +21,8 @@ class _AuthScreenState extends State<AuthScreen> {
     Provider.of<ConnectLogicProvider>(context, listen: false).init();
     Provider.of<ConnectLogicProvider>(context, listen: false)
         .refreshConnectedAccounts();
-
     Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
+
     account = Provider.of<ConnectLogicProvider>(context, listen: false)
         .connectedAccounts
         .isNotEmpty;
@@ -47,8 +47,6 @@ class _AuthScreenState extends State<AuthScreen> {
                 } else if (snapshot.hasData &&
                     logic.connectedAccounts.isEmpty) {
                   return const SignupLoginScreen();
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Check Networks'));
                 } else {
                   return const SplashScreen();
                 }
