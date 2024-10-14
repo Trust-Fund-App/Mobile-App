@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:timestamp_to_string/timestamp_to_string.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
@@ -10,11 +9,9 @@ import 'package:trustfund_app/screen/loading_screen.dart';
 import 'package:trustfund_app/screen/save_fund.dart';
 import 'package:trustfund_app/screen/withdraw_screen.dart';
 import 'package:trustfund_app/provider/readcontract_service.dart';
-import 'package:trustfund_app/utils/smartcontract_service.dart';
 import 'package:trustfund_app/utils/currency_api.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/widgets/round_button.dart';
-import 'package:uuid/uuid.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
@@ -31,30 +28,27 @@ class _HomeScreenState extends State<HomeScreen> {
   late Timer _timer;
   late String account;
 
-  Uuid uuid = const Uuid();
-  SmartcontractService smartcontractService = SmartcontractService();
+  // Uuid uuid = const Uuid();
+  // SmartcontractService smartcontractService = SmartcontractService();
 
   @override
   void initState() {
     super.initState();
-    Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
-    final provider = Provider.of<ReadcontractService>(context, listen: false);
+    final connectProvider =
+        Provider.of<ConnectLogicProvider>(context, listen: false);
+    final readContractProvider =
+        Provider.of<ReadcontractService>(context, listen: false);
 
-    account = Provider.of<ConnectLogicProvider>(context, listen: false)
-        .connectedAccounts[0]
-        .publicAddress;
-    // provider.readSavingsPlansContract(account);
-    provider.readTotalSavingsContract(account);
-    provider.readCreditScoreContract(account);
+    account = connectProvider.connectedAccounts[0].publicAddress;
+    readContractProvider.readTotalSavingsContract(account);
+    readContractProvider.readCreditScoreContract(account);
+    readContractProvider.readSavingsPlansContract(account);
+    connectProvider.getTokens();
     priceFeed = PriceFeed().getUSD();
 
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
       fetchPriceFeed();
     });
-    //fetchPriceFeed();
-    // getSavingsplans();
-    setState(() {});
   }
 
   Future<double> fetchPriceFeed() async {
@@ -67,12 +61,12 @@ class _HomeScreenState extends State<HomeScreen> {
   //   return savingsPlans;
   // }
 
-  Uint8List uuidToBytes32(String uuid) {
-    var uuidBytes = Uuid.parse(uuid);
-    var bytes32 = Uint8List(32);
-    bytes32.setRange(0, uuidBytes.length, uuidBytes);
-    return bytes32;
-  }
+  // Uint8List uuidToBytes32(String uuid) {
+  //   var uuidBytes = Uuid.parse(uuid);
+  //   var bytes32 = Uint8List(32);
+  //   bytes32.setRange(0, uuidBytes.length, uuidBytes);
+  //   return bytes32;
+  // }
 
   @override
   void dispose() {
@@ -100,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-
       //backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
         foregroundColor: AppColor.white,
@@ -137,8 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         height: 200,
                         //color: Colors.black,
-                        margin: const EdgeInsets.only(
-                            left: 20, right: 20, top: 10, bottom: 20),
+                        margin: const EdgeInsets.only(bottom: 10),
                         width: double.infinity,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -200,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Text(
                                 '\$${((snapshot.data ?? 0) * double.parse(nativeToken.toString())).toStringAsFixed(2)}',
                                 style: const TextStyle(
-                                  fontSize: 28,
+                                  fontSize: 30,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -264,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             child: Text(
                                               '$totalAmount ${logic.currChainInfo.nativeCurrency.symbol}',
                                               style: const TextStyle(
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.w600),
                                             ),
@@ -306,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ? const Text(
                                                     '0%',
                                                     style: TextStyle(
-                                                        fontSize: 18,
+                                                        fontSize: 16,
                                                         color: Colors.white,
                                                         fontWeight:
                                                             FontWeight.w600),
@@ -455,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Expanded(
-                    child: provider.savingsPlans.isEmpty
+                    child: provider.savingsPlans[0].isEmpty
                         ? Container(
                             color: Colors.grey[100],
                             child: const Center(

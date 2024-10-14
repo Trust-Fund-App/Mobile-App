@@ -32,8 +32,7 @@ class _SavingsRecordsState extends State<SavingsRecords> {
         .publicAddress;
     final provider = Provider.of<ReadcontractService>(context, listen: false);
     provider.readSavingsPlansContract(account);
-    savingsPlans =
-        Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
+    savingsPlans = provider.savingsPlans;
   }
 
   Future<List<dynamic>> getSavingsplans() async {
@@ -90,7 +89,7 @@ class _SavingsRecordsState extends State<SavingsRecords> {
           return FutureBuilder<List<dynamic>>(
             future: getSavingsplans(),
             builder: (context, snapshot) {
-              if (snapshot.hasData & logic.savingsPlans.isEmpty) {
+              if (snapshot.hasData & logic.savingsPlans[0].isEmpty) {
                 return Column(
                   children: [
                     const SizedBox(height: 20),
@@ -109,7 +108,7 @@ class _SavingsRecordsState extends State<SavingsRecords> {
                     )),
                   ],
                 );
-              } else if (snapshot.hasData & logic.savingsPlans.isNotEmpty) {
+              } else if (snapshot.hasData & logic.savingsPlans[0].isNotEmpty) {
                 return Column(
                   children: [
                     const SizedBox(height: 20),

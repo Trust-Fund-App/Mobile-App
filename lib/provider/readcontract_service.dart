@@ -109,8 +109,8 @@ class ReadcontractService extends ChangeNotifier {
 
       decoded.map((m) => _savingsPlans.add(decoded[0])).toList();
 
-      // print('Test3 $decoded');
-      // print('Test4 $savingsPlans');
+      print('Test3 $decoded');
+      print('Test4 $savingsPlans');
       isloading = false;
       notifyListeners();
       return decoded;
