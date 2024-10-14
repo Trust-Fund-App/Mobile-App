@@ -15,14 +15,27 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   late bool account;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Provider.of<ConnectLogicProvider>(context, listen: false).init();
+  //   Provider.of<ConnectLogicProvider>(context, listen: false)
+  //       .refreshConnectedAccounts();
+  //   Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
+
+  //   account = Provider.of<ConnectLogicProvider>(context, listen: false)
+  //       .connectedAccounts
+  //       .isNotEmpty;
+  //   initialization();
+  // }
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     Provider.of<ConnectLogicProvider>(context, listen: false).init();
     Provider.of<ConnectLogicProvider>(context, listen: false)
         .refreshConnectedAccounts();
     Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
-
     account = Provider.of<ConnectLogicProvider>(context, listen: false)
         .connectedAccounts
         .isNotEmpty;

@@ -108,7 +108,9 @@ class ReadcontractService extends ChangeNotifier {
       final decoded = function.decodeReturnValues(encodedResponse);
 
       decoded.map((m) => _savingsPlans.add(decoded[0])).toList();
-      //  print('Old $savingsPlans');
+
+      // print('Test3 $decoded');
+      // print('Test4 $savingsPlans');
       isloading = false;
       notifyListeners();
       return decoded;
@@ -157,7 +159,6 @@ class ReadcontractService extends ChangeNotifier {
       final abiJsonString = jsonEncode(SmartcontractAbi.contractABI);
       final result = await EvmService.readContract(publicAddress, BigInt.zero,
           contractAddress, methodName, parameters, abiJsonString);
-      print('Test3 $result');
 
       final encodedResponse = result; // Truncated for brevity
 
@@ -172,6 +173,8 @@ class ReadcontractService extends ChangeNotifier {
       //  print('Old $savingsPlans');
       isloading = false;
       notifyListeners();
+      // print('Test3 $decoded');
+      // print('Test4 $totalSavings');
       return decoded;
     } catch (error) {
       throw Exception(error);

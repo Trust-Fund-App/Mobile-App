@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:particle_connect/particle_connect.dart';
 import 'package:provider/provider.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:timestamp_to_string/timestamp_to_string.dart';
@@ -22,16 +21,17 @@ class SavingsRecords extends StatefulWidget {
 }
 
 class _SavingsRecordsState extends State<SavingsRecords> {
-  late List<Account> account;
+  late String account;
   late List<dynamic> savingsPlans;
 
   @override
   void initState() {
     super.initState();
     account = Provider.of<ConnectLogicProvider>(context, listen: false)
-        .connectedAccounts;
+        .connectedAccounts[0]
+        .publicAddress;
     final provider = Provider.of<ReadcontractService>(context, listen: false);
-    provider.readSavingsPlansContract(account[0].publicAddress);
+    provider.readSavingsPlansContract(account);
     savingsPlans =
         Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
   }
@@ -115,10 +115,12 @@ class _SavingsRecordsState extends State<SavingsRecords> {
                     const SizedBox(height: 20),
                     Expanded(
                       child: ListView.builder(
-                          //reverse: true,
                           itemCount: logic.savingsPlans[0].length,
                           itemBuilder: (context, index) {
-                            List savingsPlan = logic.savingsPlans[0][index];
+                            List savingsPlans = logic.savingsPlans.last;
+                            List savingsPlansReversed =
+                                savingsPlans.reversed.toList();
+                            List savingsPlan = savingsPlansReversed[index];
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 18),

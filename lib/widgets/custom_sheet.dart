@@ -35,17 +35,22 @@ class CusBottomSheet extends StatelessWidget {
                 name: 'Close',
                 onTap: () {
                   Navigator.pop(context);
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BottomNav()),
+                  );
                   // Navigator.pushReplacement(
                   //   context,
                   //   MaterialPageRoute(
                   //     builder: (context) => const BottomNav(),
                   //   ),
                   // );
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BottomNav()),
-                      (route) => false);
+                  // Navigator.pushAndRemoveUntil(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => const BottomNav()),
+                  //     (route) => false);
                 },
               );
             },
