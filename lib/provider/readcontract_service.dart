@@ -7,14 +7,31 @@ import 'package:web3dart/web3dart.dart';
 
 class ReadcontractService extends ChangeNotifier {
   final List<dynamic> _savingsPlans = [];
+  final List<dynamic> _savingsPlansDetails = [];
   final List<dynamic> _totalSavings = [];
   final List<dynamic> _creditScore = [];
 
   List<dynamic> get savingsPlans => _savingsPlans;
+  List<dynamic> get savingsPlansDetails => _savingsPlansDetails;
   List<dynamic> get totalSavings => _totalSavings;
   List<dynamic> get creditScore => _creditScore;
 
   bool isloading = true;
+
+  // Helper to convert Uint8List to hex
+  String uint8ListToHex(Uint8List bytes) {
+    return '0x${bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join()}';
+  }
+
+  // Helper to convert BigInt to hex
+  String bigIntToHex(BigInt value) {
+    return '0x${value.toRadixString(16)}';
+  }
+
+  // Helper to convert int to hex
+  String intToHex(int value) {
+    return '0x${value.toRadixString(16)}';
+  }
 
   Future<List<dynamic>> readSavingsPlansContract(String publicAddress) async {
     try {
@@ -119,20 +136,119 @@ class ReadcontractService extends ChangeNotifier {
     }
   }
 
-  // Helper to convert Uint8List to hex
-  String uint8ListToHex(Uint8List bytes) {
-    return '0x${bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join()}';
-  }
+  // Future<List<dynamic>> getSavingsPlansDetailsContract({
+  //   required String publicAddress,
+  //   required BigInt planId,
+  // }) async {
+  //   try {
+  //     String contractAddress = SmartcontractAbi.contractAddress;
+  //     String methodName = "getSavingsPlanDetails";
 
-  // Helper to convert BigInt to hex
-  String bigIntToHex(BigInt value) {
-    return '0x${value.toRadixString(16)}';
-  }
+  //     String planIdHex = bigIntToHex(planId);
 
-  // Helper to convert int to hex
-  String intToHex(int value) {
-    return '0x${value.toRadixString(16)}';
-  }
+  //     List<Object> parameters = <Object>[
+  //       bigIntToHex(BigInt.parse(47.toString())),
+  //       //  planIdHex
+  //     ]; // this is the method params.
+
+  //     // ABI for the getSavingsPlans function
+  //     final abi = ContractAbi.fromJson(
+  //         jsonEncode([
+  //           {
+  //             "inputs": [
+  //               {"internalType": "uint256", "name": "planId", "type": "uint256"}
+  //             ],
+  //             "name": "getSavingsPlanDetails",
+  //             "outputs": [
+  //               {
+  //                 "components": [
+  //                   {
+  //                     "internalType": "uint256",
+  //                     "name": "savingsPlanId",
+  //                     "type": "uint256"
+  //                   },
+  //                   {
+  //                     "internalType": "enum SavingsPlan.SavingsPlanType",
+  //                     "name": "savingsPlanType",
+  //                     "type": "uint8"
+  //                   },
+  //                   {
+  //                     "internalType": "uint256",
+  //                     "name": "startDate",
+  //                     "type": "uint256"
+  //                   },
+  //                   {
+  //                     "internalType": "uint256",
+  //                     "name": "maturityDate",
+  //                     "type": "uint256"
+  //                   },
+  //                   {
+  //                     "internalType": "uint256",
+  //                     "name": "interestRate",
+  //                     "type": "uint256"
+  //                   },
+  //                   {
+  //                     "internalType": "uint256",
+  //                     "name": "interestEarned",
+  //                     "type": "uint256"
+  //                   },
+  //                   {
+  //                     "internalType": "enum SavingsPlan.Frequency",
+  //                     "name": "frequency",
+  //                     "type": "uint8"
+  //                   },
+  //                   {
+  //                     "internalType": "uint256",
+  //                     "name": "duration",
+  //                     "type": "uint256"
+  //                   },
+  //                   {
+  //                     "internalType": "uint256",
+  //                     "name": "amount",
+  //                     "type": "uint256"
+  //                   },
+  //                   {
+  //                     "internalType": "uint256",
+  //                     "name": "timestamp",
+  //                     "type": "uint256"
+  //                   }
+  //                 ],
+  //                 "internalType": "struct SavingsPlan.SavingsPlanInfo",
+  //                 "name": "",
+  //                 "type": "tuple"
+  //               }
+  //             ],
+  //             "stateMutability": "view",
+  //             "type": "function"
+  //           },
+  //         ]),
+  //         'SavingsPlanDetails');
+
+  //     // Example ABI-encoded response from the contract (replace with actual response)
+  //     final abiJsonString = jsonEncode(SmartcontractAbi.contractABI);
+  //     final result = await EvmService.readContract(publicAddress, BigInt.zero,
+  //         contractAddress, methodName, parameters, abiJsonString);
+
+  //     final encodedResponse = result; // Truncated for brevity
+
+  //     // Define the function
+  //     final function =
+  //         abi.functions.firstWhere((fn) => fn.name == "getSavingsPlanDetails");
+
+  //     // Decode the ABI-encoded response
+  //     final decoded = function.decodeReturnValues(encodedResponse);
+
+  //     decoded.map((m) => _savingsPlansDetails.add(decoded[0])).toList();
+
+  //     print('Test5 $decoded');
+  //     print('Test6 $savingsPlansDetails');
+  //     isloading = false;
+  //     notifyListeners();
+  //     return decoded;
+  //   } catch (error) {
+  //     throw Exception(error);
+  //   }
+  // }
 
   Future<List<dynamic>> readTotalSavingsContract(String publicAddress) async {
     try {

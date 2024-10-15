@@ -89,8 +89,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ReadcontractService>(context, listen: false);
-    final logic = Provider.of<ConnectLogicProvider>(context, listen: false);
+    final rContractprovider =
+        Provider.of<ReadcontractService>(context, listen: false);
+    final connectProvider =
+        Provider.of<ConnectLogicProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -115,10 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
         future: fetchPriceFeed(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            double nativeToken =
-                (int.parse(logic.tokens['native']) / 1000000000000000000);
+            double nativeToken = (int.parse(connectProvider.tokens['native']) /
+                1000000000000000000);
             String totalAmount =
-                (double.parse(provider.totalSavings.last.toString()) /
+                (double.parse(rContractprovider.totalSavings.last.toString()) /
                         1000000000000000000)
                     .toStringAsFixed(4);
             //  print('TestMe ${logic.tokens}');
@@ -211,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    logic.currChainInfo.fullname,
+                                    connectProvider.currChainInfo.fullname,
                                     style: const TextStyle(color: Colors.white),
                                   ),
                                 ],
@@ -254,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              '$totalAmount ${logic.currChainInfo.nativeCurrency.symbol}',
+                                              '$totalAmount ${connectProvider.currChainInfo.nativeCurrency.symbol}',
                                               style: const TextStyle(
                                                   fontSize: 16,
                                                   color: Colors.white,
@@ -292,7 +294,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 BorderRadius.circular(5),
                                           ),
                                           child: Center(
-                                            child: provider.savingsPlans.last
+                                            child: rContractprovider
+                                                        .savingsPlans
+                                                        .last
                                                         .length <
                                                     1
                                                 ? const Text(
@@ -304,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             FontWeight.w600),
                                                   )
                                                 : Text(
-                                                    '${provider.creditScore[0].toString()}%',
+                                                    '${rContractprovider.creditScore[0].toString()}%',
                                                     style: const TextStyle(
                                                         fontSize: 18,
                                                         color: Colors.white,
@@ -447,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Expanded(
-                    child: provider.savingsPlans[0].isEmpty
+                    child: rContractprovider.savingsPlans[0].isEmpty
                         ? Container(
                             color: Colors.grey[100],
                             child: const Center(
@@ -464,10 +468,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.grey[100],
                             child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: provider.savingsPlans[0].length,
+                                itemCount:
+                                    rContractprovider.savingsPlans[0].length,
                                 itemBuilder: (context, index) {
                                   List savingsPlans =
-                                      provider.savingsPlans.last;
+                                      rContractprovider.savingsPlans.last;
                                   List savingsPlansReversed =
                                       savingsPlans.reversed.toList();
                                   List savingsPlan =
@@ -500,7 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     trailing: Text(
                                       '${(double.parse(
                                             savingsPlan[8].toString(),
-                                          ) / 1000000000000000000).toStringAsFixed(4)} ${logic.currChainInfo.nativeCurrency.symbol}',
+                                          ) / 1000000000000000000).toStringAsFixed(4)} ${connectProvider.currChainInfo.nativeCurrency.symbol}',
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500),

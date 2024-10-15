@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
-import 'package:timestamp_to_string/timestamp_to_string.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/screen/loading_screen.dart';
+import 'package:trustfund_app/screen/savings_plan_details.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/provider/readcontract_service.dart';
 
@@ -30,14 +30,23 @@ class _SavingsRecordsState extends State<SavingsRecords> {
     account = Provider.of<ConnectLogicProvider>(context, listen: false)
         .connectedAccounts[0]
         .publicAddress;
-    final provider = Provider.of<ReadcontractService>(context, listen: false);
-    provider.readSavingsPlansContract(account);
-    savingsPlans = provider.savingsPlans;
+    final rContractprovider =
+        Provider.of<ReadcontractService>(context, listen: false);
+    rContractprovider.readSavingsPlansContract(account);
+    savingsPlans = rContractprovider.savingsPlans;
   }
 
   Future<List<dynamic>> getSavingsplans() async {
     await Future.delayed(const Duration(seconds: 5));
     return savingsPlans;
+  }
+
+  int timestampToDays(int timestamp) {
+    // Convert the timestamp from seconds to a Duration
+    Duration duration = Duration(seconds: timestamp);
+
+    // Return the number of days
+    return duration.inDays;
   }
 
   SavingsPlanType getSavingsPlanTypeFromUint8(int value) {
@@ -70,6 +79,7 @@ class _SavingsRecordsState extends State<SavingsRecords> {
 
   @override
   Widget build(BuildContext context) {
+    final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
@@ -120,178 +130,237 @@ class _SavingsRecordsState extends State<SavingsRecords> {
                             List savingsPlansReversed =
                                 savingsPlans.reversed.toList();
                             List savingsPlan = savingsPlansReversed[index];
+
+                            final daysLeft = timestampToDays(
+                              (int.parse(savingsPlan[3].toString())) -
+                                  ((currentTime)),
+                            );
+                            List<Segment> segments = [
+                              Segment(
+                                value: timestampToDays(
+                                        int.parse(savingsPlan[7].toString())) -
+                                    daysLeft,
+                                color: Colors.green,
+                              ),
+                              Segment(
+                                value: daysLeft,
+                                color: Colors.grey[300]!,
+                              ),
+                            ];
+                            final progressBar = PrimerProgressBar(
+                              segments: segments,
+                              showLegend: false,
+                            );
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 18),
-                              child: Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                height: 230,
-                                width: double.infinity,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Savings Plan Type',
-                                              style: TextStyle(
-                                                  color: Colors.grey[600]),
-                                            ),
-                                            Text(
-                                              getSavingsPlanTypeFromUint8(
-                                                int.parse(
-                                                  savingsPlan[1].toString(),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SavingsPlanDetails(
+                                        planId: savingsPlan[0].toString(),
+                                        savingsPlan: savingsPlan[1].toString(),
+                                        amount: savingsPlan[8].toString(),
+                                        frequency: savingsPlan[6].toString(),
+                                        interestRate: savingsPlan[4].toString(),
+                                        startDate: savingsPlan[2].toString(),
+                                        maturityDate: savingsPlan[3].toString(),
+                                        duration: savingsPlan[7].toString(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  height: 160,
+                                  width: double.infinity,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Savings Plan Type',
+                                                style: TextStyle(
+                                                    color: Colors.grey[600]),
+                                              ),
+                                              Text(
+                                                getSavingsPlanTypeFromUint8(
+                                                  int.parse(
+                                                    savingsPlan[1].toString(),
+                                                  ),
+                                                ).name,
+                                                style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                'Amount Saved',
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
                                                 ),
-                                              ).name,
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                              'Amount Saved',
-                                              style: TextStyle(
-                                                color: Colors.grey[600],
                                               ),
-                                            ),
-                                            Text(
-                                              '${(double.parse(
-                                                    savingsPlan[8].toString(),
-                                                  ) / 1000000000000000000).toStringAsFixed(4)} ETH',
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
+                                              Text(
+                                                '${(double.parse(
+                                                      (savingsPlan[8]
+                                                          .toString()),
+                                                    ) / 1000000000000000000).toStringAsFixed(4)} ETH',
+                                                style: const TextStyle(
+                                                    color: Color.fromARGB(
+                                                        255, 3, 68, 121),
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
 
-                                        // TimestampToString.noFormater(
-                                        //   savingsPlan[3].toString(),
-                                        // ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Saving Frequency',
-                                              style: TextStyle(
-                                                  color: Colors.grey[600]),
-                                            ),
-                                            Text(
-                                              getFrequencyFromUint8(
-                                                int.parse(
-                                                  savingsPlan[6].toString(),
-                                                ),
-                                              ).name,
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                              'Interest',
-                                              style: TextStyle(
-                                                color: Colors.grey[600],
-                                              ),
-                                            ),
-                                            Text(
-                                              '${savingsPlan[4].toString()}%',
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-
-                                        // TimestampToString.noFormater(
-                                        //   savingsPlan[3].toString(),
-                                        // ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Start Date',
-                                              style: TextStyle(
-                                                  color: Colors.grey[600]),
-                                            ),
-                                            TimestampToString.dddmmmddyyyy(
-                                              savingsPlan[2].toString(),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                              'Maturity Date',
-                                              style: TextStyle(
-                                                color: Colors.grey[600],
-                                              ),
-                                            ),
-                                            TimestampToString.dddmmmddyyyy(
-                                              savingsPlan[3].toString(),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    StepProgressIndicator(
-                                      totalSteps:
-                                          int.parse(savingsPlan[3].toString()),
-                                      currentStep: DateTime.now()
-                                              .millisecondsSinceEpoch ~/
-                                          1000,
-                                      size: 8,
-                                      padding: 0,
-                                      selectedColor: Colors.yellow,
-                                      unselectedColor: Colors.cyan,
-                                      roundedEdges: const Radius.circular(10),
-                                      selectedGradientColor:
-                                          const LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Colors.yellowAccent,
-                                          Colors.deepOrange
+                                          // TimestampToString.noFormater(
+                                          //   savingsPlan[3].toString(),
+                                          // ),
                                         ],
                                       ),
-                                      unselectedGradientColor:
-                                          const LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [Colors.black, Colors.blue],
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Saving Frequency',
+                                                style: TextStyle(
+                                                    color: Colors.grey[600]),
+                                              ),
+                                              Text(
+                                                getFrequencyFromUint8(
+                                                  int.parse(
+                                                    savingsPlan[6].toString(),
+                                                  ),
+                                                ).name,
+                                                style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                'Days Left',
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                ),
+                                              ),
+                                              Text(
+                                                '$daysLeft days',
+                                                style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              // Text(
+                                              //   '${savingsPlan[4].toString()}%',
+                                              //   style: const TextStyle(
+                                              //       fontSize: 18,
+                                              //       fontWeight:
+                                              //           FontWeight.bold),
+                                              // ),
+                                            ],
+                                          ),
+
+                                          // TimestampToString.noFormater(
+                                          //   savingsPlan[3].toString(),
+                                          // ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
+                                      // Row(
+                                      //   mainAxisAlignment:
+                                      //       MainAxisAlignment.spaceBetween,
+                                      //   children: [
+                                      //     Column(
+                                      //       crossAxisAlignment:
+                                      //           CrossAxisAlignment.start,
+                                      //       children: [
+                                      //         Text(
+                                      //           'Start Date',
+                                      //           style: TextStyle(
+                                      //               color: Colors.grey[600]),
+                                      //         ),
+                                      //         TimestampToString.dddmmmddyyyy(
+                                      //           savingsPlan[2].toString(),
+                                      //         ),
+                                      //       ],
+                                      //     ),
+                                      //     Column(
+                                      //       children: [
+                                      //         Text(
+                                      //           'Maturity Date',
+                                      //           style: TextStyle(
+                                      //             color: Colors.grey[600],
+                                      //           ),
+                                      //         ),
+                                      //         TimestampToString.dddmmmddyyyy(
+                                      //           savingsPlan[3].toString(),
+                                      //         ),
+                                      //       ],
+                                      //     ),
+                                      //   ],
+                                      // ),
+
+                                      // StepProgressIndicator(
+                                      //   totalSteps: int.parse(
+                                      //       savingsPlan[3].toString()),
+                                      //   currentStep: DateTime.now()
+                                      //           .millisecondsSinceEpoch ~/
+                                      //       1000,
+                                      //   size: 8,
+                                      //   padding: 0,
+                                      //   selectedColor: Colors.yellow,
+                                      //   unselectedColor: Colors.cyan,
+                                      //   roundedEdges: const Radius.circular(10),
+                                      //   selectedGradientColor:
+                                      //       const LinearGradient(
+                                      //     begin: Alignment.topLeft,
+                                      //     end: Alignment.bottomRight,
+                                      //     colors: [
+                                      //       Colors.yellowAccent,
+                                      //       Colors.deepOrange
+                                      //     ],
+                                      //   ),
+                                      //   unselectedGradientColor:
+                                      //       const LinearGradient(
+                                      //     begin: Alignment.topLeft,
+                                      //     end: Alignment.bottomRight,
+                                      //     colors: [Colors.black, Colors.blue],
+                                      //   ),
+                                      // ),
+                                      Center(
+                                        child: progressBar,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );

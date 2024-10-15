@@ -51,6 +51,7 @@ dependencies:
   web3dart: ^2.7.3
   timestamp_to_string: ^0.0.1
   step_progress_indicator: ^1.0.2
+  primer_progress_bar: ^0.5.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

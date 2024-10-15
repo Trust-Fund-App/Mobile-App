@@ -4,7 +4,6 @@ import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/screen/bottom_nav.dart';
 import 'package:trustfund_app/screen/signup_login_screen.dart';
 import 'package:trustfund_app/screen/splash_screen.dart';
-import 'package:trustfund_app/provider/readcontract_service.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
