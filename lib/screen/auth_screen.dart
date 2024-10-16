@@ -21,27 +21,9 @@ class _AuthScreenState extends State<AuthScreen> {
         Provider.of<ConnectLogicProvider>(context, listen: false);
     connectProvider.init();
     connectProvider.refreshConnectedAccounts();
-    // connectProvider.getTokens();
-    // Provider.of<ReadcontractService>(context, listen: false)
-    //     .readSavingsPlansContract(
-    //         connectProvider.connectedAccounts[0].publicAddress);
-
     account = connectProvider.connectedAccounts.isNotEmpty;
     initialization();
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   Provider.of<ConnectLogicProvider>(context, listen: false).init();
-  //   Provider.of<ConnectLogicProvider>(context, listen: false)
-  //       .refreshConnectedAccounts();
-  //   Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
-  //   account = Provider.of<ConnectLogicProvider>(context, listen: false)
-  //       .connectedAccounts
-  //       .isNotEmpty;
-  //   initialization();
-  // }
 
   Future<bool> initialization() async {
     await Future.delayed(const Duration(seconds: 5));

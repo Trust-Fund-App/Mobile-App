@@ -13,14 +13,14 @@ enum SavingsPlanType { flexSave, secureSave, goalSave }
 
 enum Frequency { single, daily, weekly, monthly }
 
-class SavingsRecords extends StatefulWidget {
-  const SavingsRecords({super.key});
+class ActiveSavings extends StatefulWidget {
+  const ActiveSavings({super.key});
 
   @override
-  State<SavingsRecords> createState() => _SavingsRecordsState();
+  State<ActiveSavings> createState() => _ActiveSavingsState();
 }
 
-class _SavingsRecordsState extends State<SavingsRecords> {
+class _ActiveSavingsState extends State<ActiveSavings> {
   late String account;
   late List<dynamic> savingsPlans;
 
@@ -130,7 +130,7 @@ class _SavingsRecordsState extends State<SavingsRecords> {
                       child: ListView.builder(
                           itemCount: logic.savingsPlans[0].length,
                           itemBuilder: (context, index) {
-                            List savingsPlans = logic.savingsPlans[0];
+                            List savingsPlans = logic.savingsPlans.last;
                             List savingsPlansReversed =
                                 savingsPlans.reversed.toList();
                             List savingsPlan = savingsPlansReversed[index];

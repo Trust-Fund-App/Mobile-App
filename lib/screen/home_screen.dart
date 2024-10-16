@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
             double nativeToken = (int.parse(connectProvider.tokens['native']) /
                 1000000000000000000);
             String totalAmount =
-                (double.parse(rContractprovider.totalSavings[0].toString()) /
+                (double.parse(rContractprovider.totalSavings.last.toString()) /
                         1000000000000000000)
                     .toStringAsFixed(4);
             //  print('TestMe ${logic.tokens}');
@@ -432,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     rContractprovider.savingsPlans[0].length,
                                 itemBuilder: (context, index) {
                                   List savingsPlans =
-                                      rContractprovider.savingsPlans[0];
+                                      rContractprovider.savingsPlans.last;
                                   List savingsPlansReversed =
                                       savingsPlans.reversed.toList();
                                   List savingsPlan =
