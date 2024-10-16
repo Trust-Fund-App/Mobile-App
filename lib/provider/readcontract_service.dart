@@ -6,10 +6,10 @@ import 'package:trustfund_app/abi/smartcontract_abi.dart';
 import 'package:web3dart/web3dart.dart';
 
 class ReadcontractService extends ChangeNotifier {
-  final List<dynamic> _savingsPlans = [];
+  late List<dynamic> _savingsPlans = [];
   final List<dynamic> _savingsPlansDetails = [];
-  final List<dynamic> _totalSavings = [];
-  final List<dynamic> _creditScore = [];
+  List<dynamic> _totalSavings = [];
+  List<dynamic> _creditScore = [];
 
   List<dynamic> get savingsPlans => _savingsPlans;
   List<dynamic> get savingsPlansDetails => _savingsPlansDetails;
@@ -124,8 +124,8 @@ class ReadcontractService extends ChangeNotifier {
       // Decode the ABI-encoded response
       final decoded = function.decodeReturnValues(encodedResponse);
 
-      decoded.map((m) => _savingsPlans.add(decoded[0])).toList();
-
+      //   decoded.map((m) => _savingsPlans.add(decoded[0])).toList();
+      _savingsPlans = decoded;
       print('Test3 $decoded');
       print('Test4 $savingsPlans');
       isloading = false;
@@ -285,7 +285,9 @@ class ReadcontractService extends ChangeNotifier {
       // Decode the ABI-encoded response
       final decoded = function.decodeReturnValues(encodedResponse);
 
-      decoded.map((m) => _totalSavings.add(decoded[0])).toList();
+      _totalSavings = decoded;
+
+      //  decoded.map((m) => _totalSavings.add(decoded[0])).toList();
       //  print('Old $savingsPlans');
       isloading = false;
       notifyListeners();
@@ -331,8 +333,8 @@ class ReadcontractService extends ChangeNotifier {
 
       // Decode the ABI-encoded response
       final decoded = function.decodeReturnValues(encodedResponse);
-
-      decoded.map((m) => _creditScore.add(decoded[0])).toList();
+      _creditScore = decoded;
+      // decoded.map((m) => _creditScore.add(decoded[0])).toList();
 
       isloading = false;
       notifyListeners();

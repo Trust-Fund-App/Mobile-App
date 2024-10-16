@@ -27,9 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late Timer _timer;
   late String account;
 
-  // Uuid uuid = const Uuid();
-  // SmartcontractService smartcontractService = SmartcontractService();
-
   @override
   void initState() {
     super.initState();
@@ -120,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
             double nativeToken = (int.parse(connectProvider.tokens['native']) /
                 1000000000000000000);
             String totalAmount =
-                (double.parse(rContractprovider.totalSavings.last.toString()) /
+                (double.parse(rContractprovider.totalSavings[0].toString()) /
                         1000000000000000000)
                     .toStringAsFixed(4);
             //  print('TestMe ${logic.tokens}');
@@ -295,8 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           child: Center(
                                             child: rContractprovider
-                                                        .savingsPlans
-                                                        .last
+                                                        .savingsPlans[0]
                                                         .length <
                                                     1
                                                 ? const Text(
@@ -383,7 +379,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-
                         Column(
                           children: [
                             Column(
@@ -412,41 +407,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             //  const SizedBox(height: 10),
                           ],
                         ),
-
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        //   children: [
-                        //     ElevatedButton(
-                        //       onPressed: () async {
-                        //         // await smartcontractService.evmSendNative(
-                        //         //     logic.connectedAccounts.first.publicAddress);
-                        //         id = uuid.v4();
-                        //         await smartcontractService.writeContract(
-                        //           wallet: parseWalletType(logic
-                        //               .connectedAccounts.first.walletType),
-                        //           publicAddress: logic.connectedAccounts
-                        //               .first.publicAddress,
-                        //           amount: BigInt.from(1000000000000000),
-                        //           uuid: uuidToBytes32(id),
-                        //           recipient: BigInt.from(0593456789),
-                        //         );
-                        //       },
-                        //       child: const Text('Send to Contract'),
-                        //     ),
-                        //     ElevatedButton(
-                        //       onPressed: () async {
-                        //         logic.disconnect(
-                        //             parseWalletType(
-                        //               logic.connectedAccounts.first
-                        //                   .walletType,
-                        //             ),
-                        //             logic.connectedAccounts.first
-                        //                 .publicAddress);
-                        //       },
-                        //       child: const Text('Disconnect'),
-                        //     ),
-                        //   ],
-                        // ),
                       ],
                     ),
                   ),
@@ -454,12 +414,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: rContractprovider.savingsPlans[0].isEmpty
                         ? Container(
                             color: Colors.grey[100],
-                            child: const Center(
+                            child: Center(
                               child: Text(
                                 'No Transactions Available',
                                 style: TextStyle(
                                     fontSize: 18,
-                                    color: Colors.black54,
+                                    color: Colors.grey[400],
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -472,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     rContractprovider.savingsPlans[0].length,
                                 itemBuilder: (context, index) {
                                   List savingsPlans =
-                                      rContractprovider.savingsPlans.last;
+                                      rContractprovider.savingsPlans[0];
                                   List savingsPlansReversed =
                                       savingsPlans.reversed.toList();
                                   List savingsPlan =

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:particle_connect/model/wallet_type.dart';
@@ -15,7 +14,6 @@ import 'package:trustfund_app/widgets/custom_sheet.dart';
 import 'package:trustfund_app/widgets/custom_textfield.dart';
 import 'package:trustfund_app/widgets/payment_info.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:uuid/uuid.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
@@ -35,7 +33,6 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
   late Future<dynamic> priceFeed;
   late String id;
   late Timer _timer;
-  Uuid uuid = const Uuid();
 
   String amount = '0';
   double gweiAmount = 0.0;
@@ -49,8 +46,6 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
   final _formKey = GlobalKey<FormState>();
   SmartcontractService smartcontractService = SmartcontractService();
 
-  // String choosenDuration;
-
   @override
   void initState() {
     fetchPriceData();
@@ -63,8 +58,10 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
     _amount.addListener(() {
       setState(() {
         amount = _amount.text;
-        gweiAmount = (int.parse(amount) * 10000000000) / ethPrice;
-        ethConversion = (double.parse(amount) / ethPrice).toStringAsFixed(5);
+        if (amount.isNotEmpty) {
+          gweiAmount = (int.parse(amount) * 10000000000) / ethPrice;
+          ethConversion = (double.parse(amount) / ethPrice).toStringAsFixed(5);
+        }
       });
     });
     super.initState();
@@ -75,19 +72,6 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
     return savingsPlans;
   }
 
-  // Future<ReceiptModel> fetchReceipt() async {
-  //   Receipt networkService = Receipt(uuid: id);
-  //   Map<String, dynamic> data = await networkService.fetchTransaction();
-  //   return ReceiptModel.fromJson(data);
-  // }
-
-  Uint8List uuidToBytes32(String uuid) {
-    var uuidBytes = Uuid.parse(uuid);
-    var bytes32 = Uint8List(32);
-    bytes32.setRange(0, uuidBytes.length, uuidBytes);
-    return bytes32;
-  }
-
   // Convert Dart enum to the corresponding uint8 value
   int getSavingsPlanTypeValue(SavingsPlanType type) {
     return type.index; // Dart enum index will match Solidity's uint8
@@ -96,12 +80,6 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
   int getFrequencyValue(Frequency frequency) {
     return frequency.index; // Dart enum index will match Solidity's uint8
   }
-
-  // Future<void> _refreshData() async {
-  //   await w3mService.reconnectRelay();
-  //   await w3mService.loadAccountData();
-  //   setState(() {});
-  // }
 
   @override
   void dispose() {
@@ -333,11 +311,10 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                       ),
                       const SizedBox(height: 15),
                       CustomButton(
-                        name: loading ? 'Waiting...' : 'Create Now',
+                        name: loading ? 'Loading...' : 'Create Now',
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             if (double.parse(ethConversion) <= nativeToken) {
-                              id = uuid.v4();
                               setState(() {
                                 loading = true;
                               });

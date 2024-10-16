@@ -99,26 +99,30 @@ class _SavingsRecordsState extends State<SavingsRecords> {
           return FutureBuilder<List<dynamic>>(
             future: getSavingsplans(),
             builder: (context, snapshot) {
-              if (snapshot.hasData & logic.savingsPlans[0].isEmpty) {
+              if (snapshot.hasData &&
+                  snapshot.connectionState == ConnectionState.done &&
+                  logic.savingsPlans[0].isEmpty) {
                 return Column(
                   children: [
                     const SizedBox(height: 20),
                     Expanded(
                         child: Container(
                       color: Colors.grey[100],
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           'No Savings Plan Available',
                           style: TextStyle(
                               fontSize: 18,
-                              color: Colors.black54,
+                              color: Colors.grey[400],
                               fontWeight: FontWeight.bold),
                         ),
                       ),
                     )),
                   ],
                 );
-              } else if (snapshot.hasData & logic.savingsPlans[0].isNotEmpty) {
+              } else if (snapshot.hasData &&
+                  snapshot.connectionState == ConnectionState.done &&
+                  logic.savingsPlans[0].isNotEmpty) {
                 return Column(
                   children: [
                     const SizedBox(height: 20),
@@ -126,7 +130,7 @@ class _SavingsRecordsState extends State<SavingsRecords> {
                       child: ListView.builder(
                           itemCount: logic.savingsPlans[0].length,
                           itemBuilder: (context, index) {
-                            List savingsPlans = logic.savingsPlans.last;
+                            List savingsPlans = logic.savingsPlans[0];
                             List savingsPlansReversed =
                                 savingsPlans.reversed.toList();
                             List savingsPlan = savingsPlansReversed[index];

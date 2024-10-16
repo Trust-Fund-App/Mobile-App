@@ -20,14 +20,14 @@ class ClaimScreen extends StatelessWidget {
         title: const Text('Claims'),
         centerTitle: true,
       ),
-      body: const SizedBox(
+      body: SizedBox(
         child: Center(
           child: Center(
             child: Text(
               'No Claims Available',
               style: TextStyle(
                   fontSize: 18,
-                  color: Colors.black54,
+                  color: Colors.grey[400],
                   fontWeight: FontWeight.bold),
             ),
           ),
