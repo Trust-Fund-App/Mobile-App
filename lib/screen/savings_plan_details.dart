@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:timestamp_to_string/timestamp_to_string.dart';
 import 'package:trustfund_app/screen/loading_screen.dart';
 import 'package:trustfund_app/styles/colors.dart';
@@ -55,6 +55,14 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
 
   Future<bool> getSavingsplansDetails() async {
     return widget.planId.isNotEmpty;
+  }
+
+  int timestampToDays(int timestamp) {
+    // Convert the timestamp from seconds to a Duration
+    Duration duration = Duration(seconds: timestamp);
+
+    // Return the number of days
+    return duration.inDays;
   }
 
   SavingsPlanType getSavingsPlanTypeFromUint8(int value) {
@@ -118,74 +126,190 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
               ],
             );
           } else if (snapshot.hasData) {
-            return Column(
-              children: [
-                // Account Details Card
-                SizedBox(
-                  height: 210,
-                  child: Card(
-                    elevation: 10,
-                    // surfaceTintColor: Theme.of(context).colorScheme.primary,
-                    color: AppColor.primaryColor,
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    shadowColor: Colors.grey.withOpacity(0.6),
-                    child: Stack(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: Image.asset(
-                            'assets/images/map.png',
-                            fit: BoxFit.contain,
-                            color: Colors.white,
+            final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+            final daysLeft = timestampToDays(
+              (int.parse(widget.maturityDate)) - ((currentTime)),
+            );
+            List<Segment> segments = [
+              Segment(
+                value: timestampToDays(int.parse(widget.duration)) - daysLeft,
+                color: Colors.green,
+              ),
+            ];
+            final progressBar = PrimerProgressBar(
+              maxTotalValue: timestampToDays(int.parse(widget.duration)),
+              segments: segments,
+              showLegend: false,
+              barStyle: SegmentedBarStyle(
+                  backgroundColor: Colors.grey[300],
+                  size: 12,
+                  padding: const EdgeInsets.all(2)),
+            );
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Account Details Card
+                  SizedBox(
+                    height: 210,
+                    child: Card(
+                      elevation: 10,
+                      // surfaceTintColor: Theme.of(context).colorScheme.primary,
+                      color: AppColor.primaryColor,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      shadowColor: Colors.grey.withOpacity(0.6),
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Image.asset(
+                              'assets/images/map.png',
+                              fit: BoxFit.contain,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        Column(
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Total Balance',
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey[300],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      '${(double.parse(
+                                            widget.amount,
+                                          ) / 1000000000000000000).toStringAsFixed(4)} ETH',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 15),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Interest Accurred',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.grey[300],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          '${(double.parse(
+                                                widget.amount,
+                                              ) / 10000000000000).round()} \$LWT',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.grey[300],
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 20),
+                        height: 50,
+                        width: 150,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Center(
-                              child: Column(
-                                children: [
-                                  const Text(
-                                    'Total Balance',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    '${(double.parse(
-                                          widget.amount,
-                                        ) / 1000000000000000000).toStringAsFixed(4)} ETH',
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
+                            Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                  color: AppColor.primaryColor,
+                                  shape: BoxShape.circle),
+                              child: Icon(
+                                Icons.south_east_outlined,
+                                color: Colors.grey[300],
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            const Text(
+                              'Top-Up',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(right: 20),
+                        height: 50,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                  color: AppColor.primaryColor,
+                                  shape: BoxShape.circle),
+                              child: Icon(
+                                Icons.north_east_outlined,
+                                color: Colors.grey[300],
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            const Text(
+                              'Claim',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-
-                const SizedBox(height: 20),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-                  child: Container(
+                  const SizedBox(height: 15),
+                  Container(
                     padding: const EdgeInsets.all(20),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 18),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    height: 230,
+                    height: 130,
                     width: double.infinity,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -197,144 +321,180 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Savings Plan Type',
-                                  style: TextStyle(color: Colors.grey[600]),
-                                ),
-                                Text(
-                                  getSavingsPlanTypeFromUint8(
-                                    int.parse(
-                                      widget.savingsPlan,
-                                    ),
-                                  ).name,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  'Amount Saved',
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                Text(
-                                  '${(double.parse(
-                                        widget.amount,
-                                      ) / 1000000000000000000).toStringAsFixed(4)} ETH',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-
-                            // TimestampToString.noFormater(
-                            //   savingsPlan[3].toString(),
-                            // ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Saving Frequency',
-                                  style: TextStyle(color: Colors.grey[600]),
-                                ),
-                                Text(
-                                  getFrequencyFromUint8(
-                                    int.parse(
-                                      widget.frequency,
-                                    ),
-                                  ).name,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
                                   'Interest',
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                  ),
+                                  style: TextStyle(color: Colors.grey[600]),
                                 ),
                                 Text(
-                                  '${widget.interestRate}%',
+                                  'Up to ${widget.interestRate}%',
                                   style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
-
-                            // TimestampToString.noFormater(
-                            //   savingsPlan[3].toString(),
-                            // ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Start Date',
-                                  style: TextStyle(color: Colors.grey[600]),
-                                ),
-                                TimestampToString.dddmmmddyyyy(
-                                  widget.startDate,
-                                ),
-                              ],
-                            ),
                             Column(
                               children: [
                                 Text(
-                                  'Maturity Date',
+                                  'Days Left',
                                   style: TextStyle(
                                     color: Colors.grey[600],
                                   ),
                                 ),
-                                TimestampToString.dddmmmddyyyy(
-                                  widget.maturityDate,
+                                Text(
+                                  '$daysLeft days',
+                                  style: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        StepProgressIndicator(
-                          totalSteps: int.parse(widget.maturityDate),
-                          currentStep:
-                              DateTime.now().millisecondsSinceEpoch ~/ 1000,
-                          size: 8,
-                          padding: 0,
-                          selectedColor: Colors.yellow,
-                          unselectedColor: Colors.cyan,
-                          roundedEdges: const Radius.circular(10),
-                          selectedGradientColor: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Colors.yellowAccent, Colors.deepOrange],
-                          ),
-                          unselectedGradientColor: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Colors.black, Colors.blue],
-                          ),
+                        Center(
+                          child: progressBar,
                         ),
                       ],
                     ),
                   ),
-                ),
-              ],
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 18),
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: 230,
+                      width: double.infinity,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Savings Plan Type',
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                  Text(
+                                    getSavingsPlanTypeFromUint8(
+                                      int.parse(
+                                        widget.savingsPlan,
+                                      ),
+                                    ).name,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Duration',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  Text(
+                                    '${timestampToDays(int.parse(widget.duration)).toString()} days',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+
+                              // TimestampToString.noFormater(
+                              //   savingsPlan[3].toString(),
+                              // ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Saving Frequency',
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                  Text(
+                                    getFrequencyFromUint8(
+                                      int.parse(
+                                        widget.frequency,
+                                      ),
+                                    ).name,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Interest',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  Text(
+                                    '${widget.interestRate}%',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+
+                              // TimestampToString.noFormater(
+                              //   savingsPlan[3].toString(),
+                              // ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Start Date',
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                  TimestampToString.dddmmmddyyyy(
+                                    widget.startDate,
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Maturity Date',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  TimestampToString.dddmmmddyyyy(
+                                      widget.maturityDate),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             );
           } else {
             return const LoadScreen();

@@ -56,10 +56,13 @@ class _AuthScreenState extends State<AuthScreen> {
           builder: (context, snapshot) {
             return Consumer<ConnectLogicProvider>(
               builder: (context, logic, child) {
-                if (snapshot.hasData && logic.connectedAccounts.isNotEmpty) {
+                if (snapshot.hasData &&
+                    logic.connectedAccounts.isNotEmpty &&
+                    snapshot.connectionState == ConnectionState.done) {
                   return const BottomNav();
                 } else if (snapshot.hasData &&
-                    logic.connectedAccounts.isEmpty) {
+                    logic.connectedAccounts.isEmpty &&
+                    snapshot.connectionState == ConnectionState.done) {
                   return const SignupLoginScreen();
                 } else {
                   return const SplashScreen();

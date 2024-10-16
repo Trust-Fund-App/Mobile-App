@@ -142,14 +142,16 @@ class _SavingsRecordsState extends State<SavingsRecords> {
                                     daysLeft,
                                 color: Colors.green,
                               ),
-                              Segment(
-                                value: daysLeft,
-                                color: Colors.grey[300]!,
-                              ),
                             ];
                             final progressBar = PrimerProgressBar(
+                              maxTotalValue: timestampToDays(
+                                  int.parse(savingsPlan[7].toString())),
                               segments: segments,
                               showLegend: false,
+                              barStyle: SegmentedBarStyle(
+                                  backgroundColor: Colors.grey[300],
+                                  size: 12,
+                                  padding: const EdgeInsets.all(2)),
                             );
                             return Padding(
                               padding: const EdgeInsets.symmetric(
@@ -178,7 +180,7 @@ class _SavingsRecordsState extends State<SavingsRecords> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  height: 160,
+                                  height: 170,
                                   width: double.infinity,
                                   child: Column(
                                     mainAxisAlignment:

@@ -24,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<double> priceFeed;
-  late String id;
   late Timer _timer;
   late String account;
 
@@ -116,7 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: FutureBuilder<double>(
         future: fetchPriceFeed(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.done) {
             double nativeToken = (int.parse(connectProvider.tokens['native']) /
                 1000000000000000000);
             String totalAmount =
