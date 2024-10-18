@@ -14,11 +14,11 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   late bool account;
+  late ConnectLogicProvider connectProvider;
   @override
   void initState() {
     super.initState();
-    final connectProvider =
-        Provider.of<ConnectLogicProvider>(context, listen: false);
+    connectProvider = Provider.of<ConnectLogicProvider>(context, listen: false);
     connectProvider.init();
     connectProvider.refreshConnectedAccounts();
     account = connectProvider.connectedAccounts.isNotEmpty;
@@ -27,6 +27,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Future<bool> initialization() async {
     await Future.delayed(const Duration(seconds: 5));
+    if (account == true) {
+      await connectProvider.getTokens();
+    }
+
     return account;
   }
 

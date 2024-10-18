@@ -4,6 +4,7 @@ import 'package:particle_connect/particle_connect.dart';
 import 'package:provider/provider.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
 import 'package:trustfund_app/styles/colors.dart';
+import 'package:trustfund_app/widgets/soon_alert.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -13,6 +14,13 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  void infoDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => const CustomAlert(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,31 +48,31 @@ class _SettingScreenState extends State<SettingScreen> {
                     title: 'Preferences',
                     icon: Icons.extension,
                     color: Colors.green,
-                    onTap: () {},
+                    onTap: infoDialog,
                   ),
                   CustListTile(
                     title: 'Security',
                     icon: Icons.security,
                     color: Colors.deepOrange,
-                    onTap: () {},
+                    onTap: infoDialog,
                   ),
                   CustListTile(
                     title: 'About & Help',
                     icon: Icons.help,
                     color: Colors.blue,
-                    onTap: () {},
+                    onTap: infoDialog,
                   ),
                   CustListTile(
                     title: 'Join Community',
                     icon: Icons.people,
                     color: Colors.deepPurple,
-                    onTap: () {},
+                    onTap: infoDialog,
                   ),
                   CustListTile(
                     title: 'Share App',
                     icon: Icons.share,
                     color: Colors.pink,
-                    onTap: () {},
+                    onTap: infoDialog,
                   ),
                   const SizedBox(height: 50),
                   CustListTile(

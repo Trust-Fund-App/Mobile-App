@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:trustfund_app/styles/colors.dart';
+import 'package:trustfund_app/widgets/soon_alert.dart';
 
-class WithdrawScreen extends StatelessWidget {
+class WithdrawScreen extends StatefulWidget {
   const WithdrawScreen({super.key});
+
+  @override
+  State<WithdrawScreen> createState() => _WithdrawScreenState();
+}
+
+class _WithdrawScreenState extends State<WithdrawScreen> {
+  void infoDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => const CustomAlert(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +42,7 @@ class WithdrawScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
               ),
               trailing: const Icon(Icons.arrow_forward_ios_outlined),
+              onTap: infoDialog,
             ),
             ListTile(
               leading: Image.asset(
@@ -41,6 +55,7 @@ class WithdrawScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
               ),
               trailing: const Icon(Icons.arrow_forward_ios_outlined),
+              onTap: infoDialog,
             ),
             const SizedBox(height: 30),
             const Row(
@@ -72,6 +87,7 @@ class WithdrawScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
               ),
               trailing: const Icon(Icons.arrow_forward_ios_outlined),
+              onTap: infoDialog,
             ),
           ],
         ),

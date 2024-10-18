@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:trustfund_app/screen/receive_wallet.dart';
 import 'package:trustfund_app/styles/colors.dart';
+import 'package:trustfund_app/widgets/soon_alert.dart';
 
-class AddFundScreen extends StatelessWidget {
+class AddFundScreen extends StatefulWidget {
   const AddFundScreen({super.key});
+
+  @override
+  State<AddFundScreen> createState() => _AddFundScreenState();
+}
+
+class _AddFundScreenState extends State<AddFundScreen> {
+  void infoDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => const CustomAlert(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +43,7 @@ class AddFundScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
               ),
               trailing: const Icon(Icons.arrow_forward_ios_outlined),
+              onTap: infoDialog,
             ),
             ListTile(
               leading: Image.asset(
@@ -39,9 +53,15 @@ class AddFundScreen extends StatelessWidget {
               ),
               title: const Text(
                 'Visa/Master Card',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-              trailing: const Icon(Icons.arrow_forward_ios_outlined),
+              trailing: const Icon(
+                Icons.arrow_forward_ios_outlined,
+              ),
+              onTap: infoDialog,
             ),
             const SizedBox(height: 30),
             const Row(

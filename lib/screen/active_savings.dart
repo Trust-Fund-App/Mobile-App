@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
-import 'package:trustfund_app/screen/loading_screen.dart';
+import 'package:trustfund_app/widgets/load_widget.dart';
 import 'package:trustfund_app/screen/savings_plan_details.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/provider/readcontract_service.dart';
@@ -22,7 +22,7 @@ class ActiveSavings extends StatefulWidget {
 
 class _ActiveSavingsState extends State<ActiveSavings> {
   late String account;
-  late List<dynamic> savingsPlans;
+  late ReadcontractService rContractprovider;
 
   @override
   void initState() {
@@ -30,15 +30,14 @@ class _ActiveSavingsState extends State<ActiveSavings> {
     account = Provider.of<ConnectLogicProvider>(context, listen: false)
         .connectedAccounts[0]
         .publicAddress;
-    final rContractprovider =
+    rContractprovider =
         Provider.of<ReadcontractService>(context, listen: false);
     rContractprovider.readSavingsPlansContract(account);
-    savingsPlans = rContractprovider.savingsPlans;
   }
 
   Future<List<dynamic>> getSavingsplans() async {
     await Future.delayed(const Duration(seconds: 5));
-    return savingsPlans;
+    return rContractprovider.savingsPlans;
   }
 
   int timestampToDays(int timestamp) {

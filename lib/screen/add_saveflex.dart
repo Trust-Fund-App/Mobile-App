@@ -116,6 +116,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
+        backgroundColor: AppColor.white,
         title: const Text('Create A SaveFlex Plan'),
         centerTitle: true,
       ),
