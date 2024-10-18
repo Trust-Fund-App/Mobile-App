@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:timestamp_to_string/timestamp_to_string.dart';
 import 'package:trustfund_app/provider/connect_logic_provider.dart';
-import 'package:trustfund_app/screen/loading_screen.dart';
+import 'package:trustfund_app/widgets/load_widget.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/provider/readcontract_service.dart';
 

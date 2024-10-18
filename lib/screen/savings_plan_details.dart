@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:timestamp_to_string/timestamp_to_string.dart';
-import 'package:trustfund_app/screen/loading_screen.dart';
+import 'package:trustfund_app/widgets/load_widget.dart';
 import 'package:trustfund_app/styles/colors.dart';
+import 'package:trustfund_app/widgets/soon_alert.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
@@ -57,6 +58,13 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
     return widget.planId.isNotEmpty;
   }
 
+  void infoDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => const CustomAlert(),
+    );
+  }
+
   int timestampToDays(int timestamp) {
     // Convert the timestamp from seconds to a Duration
     Duration duration = Duration(seconds: timestamp);
@@ -96,8 +104,9 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
+        backgroundColor: AppColor.white,
         title: Text('${getSavingsPlanTypeFromUint8(int.parse(
           widget.savingsPlan,
         )).name} Plan Details'),
@@ -188,7 +197,7 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                                             widget.amount,
                                           ) / 1000000000000000000).toStringAsFixed(4)} ETH',
                                       style: const TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.white,
                                       ),
@@ -199,10 +208,10 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Interest Accurred',
+                                          'Reward Earned',
                                           style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
                                             color: Colors.grey[300],
                                           ),
                                         ),
@@ -212,8 +221,8 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                                                 widget.amount,
                                               ) / 10000000000000).round()} \$LWT',
                                           style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
                                             color: Colors.grey[300],
                                           ),
                                         )
@@ -233,69 +242,105 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 20),
-                        height: 50,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 30,
-                              width: 30,
-                              decoration: BoxDecoration(
+                      GestureDetector(
+                        onTap: infoDialog,
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 20),
+                          height: 50,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.shade500,
+                                  offset: const Offset(4.0, 4.0),
+                                  blurRadius: 15,
+                                  spreadRadius: 1,
+                                ),
+                                const BoxShadow(
+                                  color: Colors.white,
+                                  offset: Offset(-4.0, -4.0),
+                                  blurRadius: 15,
+                                  spreadRadius: 1,
+                                )
+                              ],
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ClipOval(
+                                child: Container(
                                   color: AppColor.primaryColor,
-                                  shape: BoxShape.circle),
-                              child: Icon(
-                                Icons.south_east_outlined,
-                                color: Colors.grey[300],
+                                  height: 32,
+                                  width: 32,
+                                  child: Icon(
+                                    size: 20,
+                                    Icons.south_east_outlined,
+                                    color: Colors.grey[300],
+                                  ),
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'Top-Up',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(width: 10),
+                              const Text(
+                                'Top-Up',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(right: 20),
-                        height: 50,
-                        width: 150,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 30,
-                              width: 30,
-                              decoration: BoxDecoration(
+                      GestureDetector(
+                        onTap: infoDialog,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          height: 50,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade500,
+                                offset: const Offset(4.0, 4.0),
+                                blurRadius: 15,
+                                spreadRadius: 1,
+                              ),
+                              const BoxShadow(
+                                color: Colors.white,
+                                offset: Offset(-4.0, -4.0),
+                                blurRadius: 15,
+                                spreadRadius: 1,
+                              )
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ClipOval(
+                                child: Container(
                                   color: AppColor.primaryColor,
-                                  shape: BoxShape.circle),
-                              child: Icon(
-                                Icons.north_east_outlined,
-                                color: Colors.grey[300],
+                                  height: 32,
+                                  width: 32,
+                                  child: Icon(
+                                    size: 20,
+                                    Icons.north_east_rounded,
+                                    color: Colors.grey[300],
+                                  ),
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'Claim',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(width: 10),
+                              const Text(
+                                'Claim',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
