@@ -8,24 +8,25 @@ class LoadScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: AppColor.white,
         body: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SpinKitFadingCircle(
-            color: AppColor.primaryColor,
-            size: 50.0,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SpinKitFadingCircle(
+                color: AppColor.primaryColor,
+                size: 50.0,
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Loading....',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
-          const Text(
-            'Loading....',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    ));
+        ));
   }
 }

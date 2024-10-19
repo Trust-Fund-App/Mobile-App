@@ -36,7 +36,7 @@ class _SaveFundScreenState extends State<SaveFundScreen> {
               title: 'SaveFlex',
               description:
                   'Save daily, weekly, or monthly with complete flexibility over a specified time',
-              color: Colors.purpleAccent,
+              color: Colors.purpleAccent.shade100,
               onTap: () {
                 Navigator.push(
                   context,
@@ -49,21 +49,21 @@ class _SaveFundScreenState extends State<SaveFundScreen> {
             PlanCard(
               title: 'SecureSave',
               description: 'Lock your funds for a set period and earn interest',
-              color: Colors.redAccent,
+              color: Colors.redAccent.shade100,
               onTap: infoDialog,
             ),
             PlanCard(
               title: 'GoalSave',
               description:
                   'Create personalized savings goals for specific life events or spending purposes',
-              color: Colors.blueAccent,
+              color: Colors.blueAccent.shade100,
               onTap: infoDialog,
             ),
             PlanCard(
               title: 'P2PSave',
               description:
                   'A rotating savings collective where members contribute funds to support each other financially',
-              color: Colors.yellowAccent.shade200,
+              color: Colors.yellowAccent.shade100,
               onTap: infoDialog,
             ),
           ],
