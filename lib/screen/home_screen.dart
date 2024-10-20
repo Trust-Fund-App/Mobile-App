@@ -27,22 +27,22 @@ class _HomeScreenState extends State<HomeScreen> {
   late Future<double> priceFeed;
   late Timer _timer;
   late String account;
+  late ConnectLogicProvider connectLogic;
+  late ReadcontractService readContract;
 
   @override
   void initState() {
     super.initState();
-    final connectProvider =
-        Provider.of<ConnectLogicProvider>(context, listen: false);
-    final readContractProvider =
-        Provider.of<ReadcontractService>(context, listen: false);
+    connectLogic = Provider.of<ConnectLogicProvider>(context, listen: false);
+    readContract = Provider.of<ReadcontractService>(context, listen: false);
 
-    account = connectProvider.connectedAccounts[0].publicAddress;
-    readContractProvider.readTotalSavingsContract(account);
-    readContractProvider.readCreditScoreContract(account);
-    readContractProvider.readSavingsPlansContract(account);
-    connectProvider.getTokens();
+    account = connectLogic.connectedAccounts[0].publicAddress;
+    readContract.readTotalSavingsContract(account);
+    readContract.readCreditScoreContract(account);
+    readContract.readSavingsPlansContract(account);
+    connectLogic.getTokens();
     priceFeed = PriceFeed().getUSD();
-
+    fetchPriceFeed();
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       fetchPriceFeed();
     });
@@ -50,13 +50,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<double> fetchPriceFeed() async {
     await Future.delayed(const Duration(seconds: 5));
+    connectLogic.getTokens();
     return priceFeed;
   }
 
   Future<void> _refreshData() async {
     await Future.delayed(const Duration(seconds: 3));
     setState(() {
-      Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
+      connectLogic.getTokens();
+      // Provider.of<ConnectLogicProvider>(context, listen: false).getTokens();
     });
   }
 
