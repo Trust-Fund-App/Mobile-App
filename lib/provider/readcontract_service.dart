@@ -43,70 +43,100 @@ class ReadcontractService extends ChangeNotifier {
       final abi = ContractAbi.fromJson(
           jsonEncode([
             {
-              "inputs": [],
+              "type": "function",
               "name": "getSavingsPlans",
+              "inputs": [],
               "outputs": [
                 {
+                  "name": "",
+                  "type": "tuple[]",
+                  "internalType": "struct TrustFund.SavingsPlanInfo[]",
                   "components": [
                     {
-                      "internalType": "uint256",
                       "name": "savingsPlanId",
-                      "type": "uint256"
+                      "type": "uint256",
+                      "internalType": "uint256"
                     },
                     {
-                      "internalType": "uint8",
                       "name": "savingsPlanType",
-                      "type": "uint8"
+                      "type": "uint8",
+                      "internalType": "enum TrustFund.SavingsPlanType"
                     },
                     {
-                      "internalType": "uint256",
                       "name": "startDate",
-                      "type": "uint256"
+                      "type": "uint256",
+                      "internalType": "uint256"
                     },
                     {
-                      "internalType": "uint256",
                       "name": "maturityDate",
-                      "type": "uint256"
+                      "type": "uint256",
+                      "internalType": "uint256"
                     },
                     {
-                      "internalType": "uint256",
                       "name": "interestRate",
-                      "type": "uint256"
+                      "type": "uint256",
+                      "internalType": "uint256"
                     },
                     {
-                      "internalType": "uint256",
                       "name": "interestEarned",
-                      "type": "uint256"
+                      "type": "uint256",
+                      "internalType": "uint256"
                     },
                     {
-                      "internalType": "uint8",
                       "name": "frequency",
-                      "type": "uint8"
+                      "type": "uint8",
+                      "internalType": "enum TrustFund.Frequency"
                     },
                     {
-                      "internalType": "uint256",
                       "name": "duration",
-                      "type": "uint256"
+                      "type": "uint256",
+                      "internalType": "uint256"
                     },
                     {
-                      "internalType": "uint256",
                       "name": "amount",
-                      "type": "uint256"
+                      "type": "uint256",
+                      "internalType": "uint256"
                     },
                     {
-                      "internalType": "uint256",
+                      "name": "targetAmount",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    },
+                    {
+                      "name": "savingsPurpose",
+                      "type": "string",
+                      "internalType": "string"
+                    },
+                    {
                       "name": "timestamp",
-                      "type": "uint256"
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    },
+                    {
+                      "name": "totalDeposited",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    },
+                    {
+                      "name": "hasReceivedSingleDeposit",
+                      "type": "bool",
+                      "internalType": "bool"
+                    },
+                    {
+                      "name": "lastDepositTime",
+                      "type": "uint256",
+                      "internalType": "uint256"
+                    },
+                    {
+                      "name": "nextDepositDue",
+                      "type": "uint256",
+                      "internalType": "uint256"
                     }
-                  ],
-                  "internalType": "tuple[]",
-                  "name": "",
-                  "type": "tuple[]"
+                  ]
                 }
               ],
-              "stateMutability": "view",
-              "type": "function"
-            }
+              "stateMutability": "view"
+            },
           ]),
           'SavingsPlan');
 
@@ -115,14 +145,14 @@ class ReadcontractService extends ChangeNotifier {
       final result = await EvmService.readContract(publicAddress, BigInt.zero,
           contractAddress, methodName, parameters, abiJsonString);
 
-      final encodedResponse = result; // Truncated for brevity
+      //  print('Test0 $result');
 
       // Define the function
       final function =
           abi.functions.firstWhere((fn) => fn.name == "getSavingsPlans");
 
       // Decode the ABI-encoded response
-      final decoded = function.decodeReturnValues(encodedResponse);
+      final decoded = function.decodeReturnValues(result);
 
       //   decoded.map((m) => _savingsPlans.add(decoded[0])).toList();
       _savingsPlans = decoded;

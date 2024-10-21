@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
@@ -38,6 +39,20 @@ class _ActiveSavingsState extends State<ActiveSavings> {
   Future<List<dynamic>> getSavingsplans() async {
     await Future.delayed(const Duration(seconds: 5));
     return rContractprovider.savingsPlans;
+  }
+
+  String hexToAscii(String hex) {
+    // Remove the "0x" prefix if present
+    var hexString = hex.startsWith("0x") ? hex.substring(2) : hex;
+
+    // Convert hex string to a list of bytes
+    var bytes = List<int>.generate(
+        hexString.length ~/ 2,
+        (index) => int.parse(hexString.substring(index * 2, index * 2 + 2),
+            radix: 16));
+
+    // Convert bytes to a UTF-8 string
+    return utf8.decode(bytes);
   }
 
   int timestampToDays(int timestamp) {
@@ -140,15 +155,24 @@ class _ActiveSavingsState extends State<ActiveSavings> {
                             );
                             List<Segment> segments = [
                               Segment(
-                                value: timestampToDays(
-                                        int.parse(savingsPlan[7].toString())) -
-                                    daysLeft,
+                                value: int.parse(savingsPlan[1].toString()) == 2
+                                    ? (int.parse(
+                                        (savingsPlan[12].toString()),
+                                      ))
+                                    : timestampToDays(int.parse(
+                                            savingsPlan[7].toString())) -
+                                        daysLeft,
                                 color: Colors.green,
                               ),
                             ];
                             final progressBar = PrimerProgressBar(
-                              maxTotalValue: timestampToDays(
-                                  int.parse(savingsPlan[7].toString())),
+                              maxTotalValue:
+                                  int.parse(savingsPlan[1].toString()) == 2
+                                      ? (int.parse(
+                                          (savingsPlan[9].toString()),
+                                        ))
+                                      : timestampToDays(
+                                          int.parse(savingsPlan[7].toString())),
                               segments: segments,
                               showLegend: false,
                               barStyle: SegmentedBarStyle(
@@ -167,12 +191,15 @@ class _ActiveSavingsState extends State<ActiveSavings> {
                                       builder: (context) => SavingsPlanDetails(
                                         planId: savingsPlan[0].toString(),
                                         savingsPlan: savingsPlan[1].toString(),
-                                        amount: savingsPlan[8].toString(),
+                                        amount: savingsPlan[12].toString(),
                                         frequency: savingsPlan[6].toString(),
                                         interestRate: savingsPlan[4].toString(),
                                         startDate: savingsPlan[2].toString(),
                                         maturityDate: savingsPlan[3].toString(),
                                         duration: savingsPlan[7].toString(),
+                                        targetAmount: savingsPlan[9].toString(),
+                                        savingsPurpose:
+                                            savingsPlan[10].toString(),
                                       ),
                                     ),
                                   );
@@ -252,16 +279,26 @@ class _ActiveSavingsState extends State<ActiveSavings> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Saving Frequency',
+                                                int.parse(savingsPlan[1]
+                                                            .toString()) ==
+                                                        2
+                                                    ? 'Savings Purpose'
+                                                    : 'Saving Frequency',
                                                 style: TextStyle(
                                                     color: Colors.grey[600]),
                                               ),
                                               Text(
-                                                getFrequencyFromUint8(
-                                                  int.parse(
-                                                    savingsPlan[6].toString(),
-                                                  ),
-                                                ).name,
+                                                int.parse(savingsPlan[1]
+                                                            .toString()) ==
+                                                        2
+                                                    ? hexToAscii(savingsPlan[10]
+                                                        .toString())
+                                                    : getFrequencyFromUint8(
+                                                        int.parse(
+                                                          savingsPlan[6]
+                                                              .toString(),
+                                                        ),
+                                                      ).name,
                                                 style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight:
@@ -272,13 +309,24 @@ class _ActiveSavingsState extends State<ActiveSavings> {
                                           Column(
                                             children: [
                                               Text(
-                                                'Days Left',
+                                                int.parse(savingsPlan[1]
+                                                            .toString()) !=
+                                                        2
+                                                    ? 'Days Left'
+                                                    : 'Target Amount',
                                                 style: TextStyle(
                                                   color: Colors.grey[600],
                                                 ),
                                               ),
                                               Text(
-                                                '$daysLeft days',
+                                                int.parse(savingsPlan[1]
+                                                            .toString()) !=
+                                                        2
+                                                    ? '$daysLeft days'
+                                                    : '${(double.parse(
+                                                          (savingsPlan[9]
+                                                              .toString()),
+                                                        ) / 1000000000000000000).toStringAsFixed(4)} ETH',
                                                 style: const TextStyle(
                                                     color: Colors.red,
                                                     fontSize: 16,

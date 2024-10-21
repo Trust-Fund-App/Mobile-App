@@ -19,28 +19,33 @@ enum SavingsPlanType { flexSave, secureSave, goalSave }
 
 enum Frequency { single, daily, weekly, monthly }
 
-class AddSaveFlex extends StatefulWidget {
-  const AddSaveFlex({super.key});
+class CreateGoalSave extends StatefulWidget {
+  const CreateGoalSave({super.key});
 
   @override
-  State<AddSaveFlex> createState() => _AddSaveFlexState();
+  State<CreateGoalSave> createState() => _CreateGoalSaveState();
 }
 
-class _AddSaveFlexState extends State<AddSaveFlex> {
+class _CreateGoalSaveState extends State<CreateGoalSave> {
+  final TextEditingController _title = TextEditingController();
   final TextEditingController _amount = TextEditingController();
+  final TextEditingController _targetAmount = TextEditingController();
   final TextEditingController recipient = TextEditingController();
   late ConnectLogicProvider logicProvider;
   late Future<dynamic> priceFeed;
   late String id;
   late Timer _timer;
 
+  String title = '';
   String amount = '0';
+  String targetAmount = '0';
   double gweiAmount = 0.0;
+  double gweiTargetAmount = 0.0;
   double ethPrice = 0.0;
   String ethConversion = '0';
   bool loading = false;
   bool isListerning = true;
-  String? _dropdownDuration;
+  //String? _dropdownDuration;
   Frequency? _dropdownFrequancy;
   late List<dynamic> savingsPlans;
   final _formKey = GlobalKey<FormState>();
@@ -57,7 +62,14 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
         Provider.of<ReadcontractService>(context, listen: false).savingsPlans;
     _amount.addListener(() {
       setState(() {
+        title = _title.text;
         amount = _amount.text;
+        targetAmount = _targetAmount.text;
+        if (targetAmount.isNotEmpty) {
+          gweiTargetAmount = (int.parse(targetAmount) * 10000000000) / ethPrice;
+          ethConversion =
+              (double.parse(targetAmount) / ethPrice).toStringAsFixed(5);
+        }
         if (amount.isNotEmpty) {
           gweiAmount = (int.parse(amount) * 10000000000) / ethPrice;
           ethConversion = (double.parse(amount) / ethPrice).toStringAsFixed(5);
@@ -89,13 +101,13 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
     _timer.cancel();
   }
 
-  void dropdownDuration(String? selectedValue) {
-    if (selectedValue is String) {
-      setState(() {
-        _dropdownDuration = selectedValue;
-      });
-    }
-  }
+  // void dropdownDuration(String? selectedValue) {
+  //   if (selectedValue is String) {
+  //     setState(() {
+  //       _dropdownDuration = selectedValue;
+  //     });
+  //   }
+  // }
 
   void dropdownFrequancy(Frequency? selectedValue) {
     if (selectedValue is Frequency) {
@@ -117,7 +129,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: AppColor.white,
-        title: const Text('Create A SaveFlex Plan'),
+        title: const Text('Create A GoalSave Plan'),
         centerTitle: true,
       ),
       body: Consumer<ConnectLogicProvider>(
@@ -141,68 +153,6 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'How long do you want to save?',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            Container(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              decoration: BoxDecoration(
-                                color: AppColor.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black),
-                              ),
-                              child: DropdownButton(
-                                isExpanded: true,
-                                hint:
-                                    const Text('Select your savings duration'),
-                                underline: const SizedBox(),
-                                padding: const EdgeInsets.all(3),
-                                style: const TextStyle(color: Colors.black),
-                                dropdownColor: Colors.white,
-                                items: const [
-                                  DropdownMenuItem(
-                                      value: '15552000',
-                                      child: Text('6 Months')),
-                                  DropdownMenuItem(
-                                    value: '31536000',
-                                    child: Text('12 Months'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: '63072000',
-                                    child: Text('24 Months'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: '126144000',
-                                    child: Text('48 Months'),
-                                  ),
-                                ],
-                                elevation: 15,
-                                value: _dropdownDuration,
-                                onChanged: dropdownDuration,
-                                iconSize: 42,
-                                iconEnabledColor: AppColor.primaryColor,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-
-                            // CustomTextField(
-                            //   controller: recipient,
-                            //   hintText: "Enter Recipient Number",
-                            //   validator: (value) {
-                            //     if (value == null || value.isEmpty) {
-                            //       return 'Please enter valid recipient Number';
-                            //     } else if (value.length != 10) {
-                            //       return 'The receipient number should be 10 digits';
-                            //     }
-                            //     return null;
-                            //   },
-                            // ),
-
                             const SizedBox(height: 15),
                             const Text(
                               'How often would you like to save?',
@@ -247,8 +197,45 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                                 iconEnabledColor: AppColor.primaryColor,
                               ),
                             ),
-                            const SizedBox(height: 30),
-
+                            const SizedBox(height: 15),
+                            const Text(
+                              'Title of your savings goal',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextField(
+                              controller: _title,
+                              hintText: "Eg. Rent, Fees, etc.",
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your savings title';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 15),
+                            const Text(
+                              'What is your target amount',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextField(
+                              controller: _targetAmount,
+                              hintText: "Target Amount in USD",
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter the Amount';
+                                } else if (int.parse(value) < 1) {
+                                  return 'Please the amount should be greater than  5 USD';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 15),
                             const Text(
                               'How much do you want to save today?',
                               style: TextStyle(
@@ -330,21 +317,26 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                               //   ),
                               // );
 
-                              await smartcontractService.saveFlexContract(
+                              await smartcontractService.goalSaveContract(
                                 wallet: parseWalletType(
                                     logic.connectedAccounts[0].walletType),
                                 publicAddress:
                                     logic.connectedAccounts[0].publicAddress,
+                                targetAmount: BigInt.from(
+                                  (gweiTargetAmount * 100000000).round(),
+                                ),
                                 amount: BigInt.from(
                                   (gweiAmount * 100000000).round(),
                                 ),
+                                savingsPurpose: title,
+
                                 // uuid: uuidToBytes32(id),
-                                savingsPlanType: getSavingsPlanTypeValue(
-                                    SavingsPlanType.flexSave),
+                                // savingsPlanType: getSavingsPlanTypeValue(
+                                //     SavingsPlanType.flexSave),
                                 frequency:
                                     getFrequencyValue(_dropdownFrequancy!),
-                                duration:
-                                    BigInt.from(int.parse(_dropdownDuration!)),
+                                // duration:
+                                //     BigInt.from(int.parse(_dropdownDuration!)),
                               );
 
                               // ignore: use_build_context_synchronously

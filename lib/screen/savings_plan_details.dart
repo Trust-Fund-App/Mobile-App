@@ -1,8 +1,9 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:timestamp_to_string/timestamp_to_string.dart';
+import 'package:trustfund_app/screen/make_deposite.dart';
 import 'package:trustfund_app/widgets/load_widget.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/widgets/soon_alert.dart';
@@ -20,7 +21,8 @@ class SavingsPlanDetails extends StatefulWidget {
   final String frequency;
   final String duration;
   final String amount;
-
+  final String targetAmount;
+  final String savingsPurpose;
   const SavingsPlanDetails({
     super.key,
     required this.planId,
@@ -31,6 +33,8 @@ class SavingsPlanDetails extends StatefulWidget {
     required this.frequency,
     required this.duration,
     required this.amount,
+    required this.targetAmount,
+    required this.savingsPurpose,
   });
 
   @override
@@ -71,6 +75,20 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
 
     // Return the number of days
     return duration.inDays;
+  }
+
+  String hexToAscii(String hex) {
+    // Remove the "0x" prefix if present
+    var hexString = hex.startsWith("0x") ? hex.substring(2) : hex;
+
+    // Convert hex string to a list of bytes
+    var bytes = List<int>.generate(
+        hexString.length ~/ 2,
+        (index) => int.parse(hexString.substring(index * 2, index * 2 + 2),
+            radix: 16));
+
+    // Convert bytes to a UTF-8 string
+    return utf8.decode(bytes);
   }
 
   SavingsPlanType getSavingsPlanTypeFromUint8(int value) {
@@ -141,12 +159,20 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
             );
             List<Segment> segments = [
               Segment(
-                value: timestampToDays(int.parse(widget.duration)) - daysLeft,
+                value: int.parse(widget.savingsPlan) == 2
+                    ? (int.parse(
+                        (widget.amount),
+                      ))
+                    : timestampToDays(int.parse(widget.duration)) - daysLeft,
                 color: Colors.green,
               ),
             ];
             final progressBar = PrimerProgressBar(
-              maxTotalValue: timestampToDays(int.parse(widget.duration)),
+              maxTotalValue: int.parse(widget.savingsPlan) == 2
+                  ? (int.parse(
+                      (widget.targetAmount),
+                    ))
+                  : timestampToDays(int.parse(widget.duration)),
               segments: segments,
               showLegend: false,
               barStyle: SegmentedBarStyle(
@@ -243,7 +269,17 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       GestureDetector(
-                        onTap: infoDialog,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddToFlexSave(
+                                savingsPlan: widget.savingsPlan,
+                                planId: widget.planId,
+                              ),
+                            ),
+                          );
+                        },
                         child: Container(
                           margin: const EdgeInsets.only(left: 20),
                           height: 50,
@@ -380,13 +416,19 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                             Column(
                               children: [
                                 Text(
-                                  'Days Left',
+                                  int.parse(widget.savingsPlan) == 2
+                                      ? 'Target Amount'
+                                      : 'Days Left',
                                   style: TextStyle(
                                     color: Colors.grey[600],
                                   ),
                                 ),
                                 Text(
-                                  '$daysLeft days',
+                                  int.parse(widget.savingsPlan) == 2
+                                      ? '${(double.parse(
+                                            (widget.targetAmount),
+                                          ) / 1000000000000000000).toStringAsFixed(4)} ETH'
+                                      : '$daysLeft days',
                                   style: const TextStyle(
                                       color: Colors.red,
                                       fontSize: 16,
@@ -442,13 +484,17 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                               Column(
                                 children: [
                                   Text(
-                                    'Duration',
+                                    int.parse(widget.savingsPlan) == 2
+                                        ? 'Savings Purpose'
+                                        : 'Duration',
                                     style: TextStyle(
                                       color: Colors.grey[600],
                                     ),
                                   ),
                                   Text(
-                                    '${timestampToDays(int.parse(widget.duration)).toString()} days',
+                                    int.parse(widget.savingsPlan) == 2
+                                        ? hexToAscii(widget.savingsPurpose)
+                                        : '${timestampToDays(int.parse(widget.duration)).toString()} days',
                                     style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold),
