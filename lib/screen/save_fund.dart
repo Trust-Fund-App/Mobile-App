@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trustfund_app/screen/add_saveflex.dart';
+import 'package:trustfund_app/screen/create_goal_save.dart';
+import 'package:trustfund_app/screen/create_secure_save.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/widgets/soon_alert.dart';
 
@@ -50,14 +52,28 @@ class _SaveFundScreenState extends State<SaveFundScreen> {
               title: 'SecureSave',
               description: 'Lock your funds for a set period and earn interest',
               color: Colors.redAccent.shade100,
-              onTap: infoDialog,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CreateSecureSave(),
+                  ),
+                );
+              },
             ),
             PlanCard(
               title: 'GoalSave',
               description:
                   'Create personalized savings goals for specific life events or spending purposes',
               color: Colors.blueAccent.shade100,
-              onTap: infoDialog,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CreateGoalSave(),
+                  ),
+                );
+              },
             ),
             PlanCard(
               title: 'P2PSave',

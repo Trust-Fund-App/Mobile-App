@@ -35,12 +35,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     connectLogic = Provider.of<ConnectLogicProvider>(context, listen: false);
     readContract = Provider.of<ReadcontractService>(context, listen: false);
-
+    connectLogic.getTokens();
     account = connectLogic.connectedAccounts[0].publicAddress;
+
     readContract.readTotalSavingsContract(account);
     readContract.readCreditScoreContract(account);
     readContract.readSavingsPlansContract(account);
-    connectLogic.getTokens();
+
     priceFeed = PriceFeed().getUSD();
     fetchPriceFeed();
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
@@ -481,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       subtitle: TimestampToString.dddmmmddyyyy(
-                                        savingsPlan[9].toString(),
+                                        savingsPlan[2].toString(),
                                       ),
                                       trailing: Text(
                                         '${(double.parse(

@@ -19,16 +19,21 @@ enum SavingsPlanType { flexSave, secureSave, goalSave }
 
 enum Frequency { single, daily, weekly, monthly }
 
-class AddSaveFlex extends StatefulWidget {
-  const AddSaveFlex({super.key});
+class AddToFlexSave extends StatefulWidget {
+  final String planId;
+  final String savingsPlan;
+  const AddToFlexSave({
+    super.key,
+    required this.planId,
+    required this.savingsPlan,
+  });
 
   @override
-  State<AddSaveFlex> createState() => _AddSaveFlexState();
+  State<AddToFlexSave> createState() => _AddToFlexSaveState();
 }
 
-class _AddSaveFlexState extends State<AddSaveFlex> {
+class _AddToFlexSaveState extends State<AddToFlexSave> {
   final TextEditingController _amount = TextEditingController();
-  final TextEditingController recipient = TextEditingController();
   late ConnectLogicProvider logicProvider;
   late Future<dynamic> priceFeed;
   late String id;
@@ -40,8 +45,6 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
   String ethConversion = '0';
   bool loading = false;
   bool isListerning = true;
-  String? _dropdownDuration;
-  Frequency? _dropdownFrequancy;
   late List<dynamic> savingsPlans;
   final _formKey = GlobalKey<FormState>();
   SmartcontractService smartcontractService = SmartcontractService();
@@ -85,24 +88,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
   void dispose() {
     super.dispose();
     _amount.dispose();
-    recipient.dispose();
     _timer.cancel();
-  }
-
-  void dropdownDuration(String? selectedValue) {
-    if (selectedValue is String) {
-      setState(() {
-        _dropdownDuration = selectedValue;
-      });
-    }
-  }
-
-  void dropdownFrequancy(Frequency? selectedValue) {
-    if (selectedValue is Frequency) {
-      setState(() {
-        _dropdownFrequancy = selectedValue;
-      });
-    }
   }
 
   Future<dynamic> fetchPriceData() async {
@@ -117,7 +103,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: AppColor.white,
-        title: const Text('Create A SaveFlex Plan'),
+        title: const Text('Make A Deposit'),
         centerTitle: true,
       ),
       body: Consumer<ConnectLogicProvider>(
@@ -141,114 +127,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'How long do you want to save?',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            Container(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              decoration: BoxDecoration(
-                                color: AppColor.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black),
-                              ),
-                              child: DropdownButton(
-                                isExpanded: true,
-                                hint:
-                                    const Text('Select your savings duration'),
-                                underline: const SizedBox(),
-                                padding: const EdgeInsets.all(3),
-                                style: const TextStyle(color: Colors.black),
-                                dropdownColor: Colors.white,
-                                items: const [
-                                  DropdownMenuItem(
-                                      value: '15552000',
-                                      child: Text('6 Months')),
-                                  DropdownMenuItem(
-                                    value: '31536000',
-                                    child: Text('12 Months'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: '63072000',
-                                    child: Text('24 Months'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: '126144000',
-                                    child: Text('48 Months'),
-                                  ),
-                                ],
-                                elevation: 15,
-                                value: _dropdownDuration,
-                                onChanged: dropdownDuration,
-                                iconSize: 42,
-                                iconEnabledColor: AppColor.primaryColor,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-
-                            // CustomTextField(
-                            //   controller: recipient,
-                            //   hintText: "Enter Recipient Number",
-                            //   validator: (value) {
-                            //     if (value == null || value.isEmpty) {
-                            //       return 'Please enter valid recipient Number';
-                            //     } else if (value.length != 10) {
-                            //       return 'The receipient number should be 10 digits';
-                            //     }
-                            //     return null;
-                            //   },
-                            // ),
-
-                            const SizedBox(height: 15),
-                            const Text(
-                              'How often would you like to save?',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            Container(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 5),
-                              decoration: BoxDecoration(
-                                color: AppColor.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black),
-                              ),
-                              child: DropdownButton<Frequency>(
-                                isExpanded: true,
-                                hint: const Text(
-                                    'Select Daily, Weekly or Monthly'),
-                                underline: const SizedBox(),
-                                padding: const EdgeInsets.all(3),
-                                style: const TextStyle(color: Colors.black),
-                                dropdownColor: Colors.white,
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: Frequency.daily,
-                                    child: Text('Daily'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: Frequency.weekly,
-                                    child: Text('Weekly'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: Frequency.monthly,
-                                    child: Text('Monthly'),
-                                  ),
-                                ],
-                                value: _dropdownFrequancy,
-                                onChanged: dropdownFrequancy,
-                                iconSize: 42,
-                                iconEnabledColor: AppColor.primaryColor,
-                              ),
-                            ),
-                            const SizedBox(height: 30),
-
+                            const SizedBox(height: 35),
                             const Text(
                               'How much do you want to save today?',
                               style: TextStyle(
@@ -312,7 +191,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                       ),
                       const SizedBox(height: 15),
                       CustomButton(
-                        name: loading ? 'Loading...' : 'Create Now',
+                        name: loading ? 'Loading...' : 'Deposit Now',
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             if (double.parse(ethConversion) <= nativeToken) {
@@ -329,24 +208,37 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                               //     (gweiAmount * 100000000).round(),
                               //   ),
                               // );
-
-                              await smartcontractService.saveFlexContract(
-                                wallet: parseWalletType(
-                                    logic.connectedAccounts[0].walletType),
-                                publicAddress:
-                                    logic.connectedAccounts[0].publicAddress,
-                                amount: BigInt.from(
-                                  (gweiAmount * 100000000).round(),
-                                ),
-                                // uuid: uuidToBytes32(id),
-                                savingsPlanType: getSavingsPlanTypeValue(
-                                    SavingsPlanType.flexSave),
-                                frequency:
-                                    getFrequencyValue(_dropdownFrequancy!),
-                                duration:
-                                    BigInt.from(int.parse(_dropdownDuration!)),
-                              );
-
+                              int.parse(widget.savingsPlan) == 0
+                                  ? await smartcontractService
+                                      .addToFlexSaveContract(
+                                      wallet: parseWalletType(logic
+                                          .connectedAccounts[0].walletType),
+                                      publicAddress: logic
+                                          .connectedAccounts[0].publicAddress,
+                                      amount: BigInt.from(
+                                        (gweiAmount * 100000000).round(),
+                                      ),
+                                      planId: BigInt.from(
+                                        int.parse(widget.planId),
+                                      ),
+                                    )
+                                  : int.parse(widget.savingsPlan) == 2
+                                      ? await smartcontractService
+                                          .addToGoalSaveContract(
+                                              wallet: parseWalletType(logic
+                                                  .connectedAccounts[0]
+                                                  .walletType),
+                                              publicAddress: logic
+                                                  .connectedAccounts[0]
+                                                  .publicAddress,
+                                              amount: BigInt.from(
+                                                (gweiAmount * 100000000)
+                                                    .round(),
+                                              ),
+                                              planId: BigInt.from(
+                                                int.parse(widget.planId),
+                                              ))
+                                      : "";
                               // ignore: use_build_context_synchronously
                               customBottomSheet(context);
                             } else {
@@ -437,7 +329,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                           widget: Column(
                             children: [
                               const Text(
-                                'Plan Created Successfully🎉',
+                                'Deposited Successfully🎉',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
@@ -515,7 +407,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                 return const CusBottomSheet(
                   imageUrl: 'assets/images/wait.png',
                   widget: Text(
-                    'Waiting for Approval....',
+                    'Waiting for Response....',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,

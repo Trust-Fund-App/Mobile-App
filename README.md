@@ -16,9 +16,12 @@ Beyond security, Trust Fund introduces gamification and rewards to encourage use
 
 Trust fund is a decentralized savings plaftorm deployed on Base Testnet. You can look up the details here.
 
-https://base-sepolia.blockscout.com/address/0x27752B90fb4a315959B76237B31562B63DB22aA7
+Here is a link to the verified deployed contract address.
+[0xfdA3e91fe4a5f17bd7Dd47f6B0Fd72663af73a8c](https://sepolia.basescan.org/address/0xfdA3e91fe4a5f17bd7Dd47f6B0Fd72663af73a8c)
 
 You can check Trust Fund Smart Contract repo [Here](https://github.com/Trust-Fund-App/smart-contrct)
+
+Old Contract: https://base-sepolia.blockscout.com/address/0x27752B90fb4a315959B76237B31562B63DB22aA7
 
 ## Demo
 
@@ -39,10 +42,4 @@ Flutter
 Particle Auth Flutter SDK
 Particle Connect Flutter SDK
 Particle AA Flutter SDK
-```
-
-## License
-
-```
-Trust Fund is licensed under the MIT License.
 ```
