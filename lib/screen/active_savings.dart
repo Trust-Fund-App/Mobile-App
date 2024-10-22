@@ -12,7 +12,7 @@ import 'package:trustfund_app/provider/readcontract_service.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
-enum Frequency { single, daily, weekly, monthly }
+enum Frequency { once, daily, weekly, monthly }
 
 class ActiveSavings extends StatefulWidget {
   const ActiveSavings({super.key});
@@ -79,7 +79,7 @@ class _ActiveSavingsState extends State<ActiveSavings> {
   Frequency getFrequencyFromUint8(int value) {
     switch (value) {
       case 0:
-        return Frequency.single;
+        return Frequency.once;
       case 1:
         return Frequency.daily;
       case 2:
@@ -115,7 +115,7 @@ class _ActiveSavingsState extends State<ActiveSavings> {
             builder: (context, snapshot) {
               if (snapshot.hasData &&
                   snapshot.connectionState == ConnectionState.done &&
-                  logic.savingsPlans[0].isEmpty) {
+                  rContractprovider.savingsPlans[0].isEmpty) {
                 return Column(
                   children: [
                     const SizedBox(height: 20),
@@ -136,7 +136,7 @@ class _ActiveSavingsState extends State<ActiveSavings> {
                 );
               } else if (snapshot.hasData &&
                   snapshot.connectionState == ConnectionState.done &&
-                  logic.savingsPlans[0].isNotEmpty) {
+                  rContractprovider.savingsPlans[0].isNotEmpty) {
                 return Column(
                   children: [
                     const SizedBox(height: 20),

@@ -10,7 +10,7 @@ import 'package:trustfund_app/widgets/soon_alert.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
-enum Frequency { single, daily, weekly, monthly }
+enum Frequency { once, daily, weekly, monthly }
 
 class SavingsPlanDetails extends StatefulWidget {
   final String planId;
@@ -107,7 +107,7 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
   Frequency getFrequencyFromUint8(int value) {
     switch (value) {
       case 0:
-        return Frequency.single;
+        return Frequency.once;
       case 1:
         return Frequency.daily;
       case 2:
@@ -185,7 +185,7 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                 children: [
                   // Account Details Card
                   SizedBox(
-                    height: 210,
+                    height: 180,
                     child: Card(
                       elevation: 10,
                       // surfaceTintColor: Theme.of(context).colorScheme.primary,
@@ -264,121 +264,182 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
+
+                  Column(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddToFlexSave(
-                                savingsPlan: widget.savingsPlan,
-                                planId: widget.planId,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          height: 50,
-                          width: 150,
-                          decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.shade500,
-                                  offset: const Offset(4.0, 4.0),
-                                  blurRadius: 15,
-                                  spreadRadius: 1,
-                                ),
-                                const BoxShadow(
+                      int.parse(widget.savingsPlan) == 1
+                          ? GestureDetector(
+                              onTap: infoDialog,
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                height: 60,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.shade500,
+                                      offset: const Offset(4.0, 4.0),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    ),
+                                    const BoxShadow(
+                                      color: Colors.white,
+                                      offset: Offset(-4.0, -4.0),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    )
+                                  ],
                                   color: Colors.white,
-                                  offset: Offset(-4.0, -4.0),
-                                  blurRadius: 15,
-                                  spreadRadius: 1,
-                                )
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ClipOval(
+                                      child: Container(
+                                        color: AppColor.primaryColor,
+                                        height: 32,
+                                        width: 32,
+                                        child: Icon(
+                                          size: 20,
+                                          Icons.north_east_rounded,
+                                          color: Colors.grey[300],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    const Text(
+                                      'Claim Savings',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AddToFlexSave(
+                                          savingsPlan: widget.savingsPlan,
+                                          planId: widget.planId,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 20),
+                                    height: 50,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.shade500,
+                                            offset: const Offset(4.0, 4.0),
+                                            blurRadius: 15,
+                                            spreadRadius: 1,
+                                          ),
+                                          const BoxShadow(
+                                            color: Colors.white,
+                                            offset: Offset(-4.0, -4.0),
+                                            blurRadius: 15,
+                                            spreadRadius: 1,
+                                          )
+                                        ],
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ClipOval(
+                                          child: Container(
+                                            color: AppColor.primaryColor,
+                                            height: 32,
+                                            width: 32,
+                                            child: Icon(
+                                              size: 20,
+                                              Icons.south_east_outlined,
+                                              color: Colors.grey[300],
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        const Text(
+                                          'Top-Up',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: infoDialog,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 20),
+                                    height: 50,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.shade500,
+                                          offset: const Offset(4.0, 4.0),
+                                          blurRadius: 15,
+                                          spreadRadius: 1,
+                                        ),
+                                        const BoxShadow(
+                                          color: Colors.white,
+                                          offset: Offset(-4.0, -4.0),
+                                          blurRadius: 15,
+                                          spreadRadius: 1,
+                                        )
+                                      ],
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ClipOval(
+                                          child: Container(
+                                            color: AppColor.primaryColor,
+                                            height: 32,
+                                            width: 32,
+                                            child: Icon(
+                                              size: 20,
+                                              Icons.north_east_rounded,
+                                              color: Colors.grey[300],
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        const Text(
+                                          'Claim',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ClipOval(
-                                child: Container(
-                                  color: AppColor.primaryColor,
-                                  height: 32,
-                                  width: 32,
-                                  child: Icon(
-                                    size: 20,
-                                    Icons.south_east_outlined,
-                                    color: Colors.grey[300],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              const Text(
-                                'Top-Up',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: infoDialog,
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 20),
-                          height: 50,
-                          width: 150,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade500,
-                                offset: const Offset(4.0, 4.0),
-                                blurRadius: 15,
-                                spreadRadius: 1,
-                              ),
-                              const BoxShadow(
-                                color: Colors.white,
-                                offset: Offset(-4.0, -4.0),
-                                blurRadius: 15,
-                                spreadRadius: 1,
-                              )
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ClipOval(
-                                child: Container(
-                                  color: AppColor.primaryColor,
-                                  height: 32,
-                                  width: 32,
-                                  child: Icon(
-                                    size: 20,
-                                    Icons.north_east_rounded,
-                                    color: Colors.grey[300],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              const Text(
-                                'Claim',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                            ),
                     ],
                   ),
                   const SizedBox(height: 15),
@@ -390,7 +451,7 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    height: 130,
+                    height: 120,
                     width: double.infinity,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
