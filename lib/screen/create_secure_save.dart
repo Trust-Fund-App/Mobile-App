@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:particle_connect/model/wallet_type.dart';
 import 'package:particle_connect/particle_connect.dart';
@@ -17,7 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
-enum Frequency { single, daily, weekly, monthly }
+enum Frequency { once, daily, weekly, monthly }
 
 class CreateSecureSave extends StatefulWidget {
   const CreateSecureSave({super.key});
@@ -39,6 +40,7 @@ class _CreateSecureSaveState extends State<CreateSecureSave> {
   double ethPrice = 0.0;
   String ethConversion = '0';
   bool loading = false;
+  bool isSelected = false;
   bool isListerning = true;
   String? _dropdownDuration;
   late List<dynamic> savingsPlans;
@@ -92,6 +94,7 @@ class _CreateSecureSaveState extends State<CreateSecureSave> {
     if (selectedValue is String) {
       setState(() {
         _dropdownDuration = selectedValue;
+        isSelected = true;
       });
     }
   }
@@ -179,6 +182,14 @@ class _CreateSecureSaveState extends State<CreateSecureSave> {
                                 iconEnabledColor: AppColor.primaryColor,
                               ),
                             ),
+                            if (!isSelected)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 8.0, left: 5),
+                                child: Text(
+                                  "Please select your option",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
                             const SizedBox(height: 15),
                             const Text(
                               'How much do you want to save?',
@@ -188,13 +199,17 @@ class _CreateSecureSaveState extends State<CreateSecureSave> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextField(
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[0-9]"))
+                              ],
                               controller: _amount,
                               hintText: "Amount in USD",
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter the Amount';
                                 } else if (int.parse(value) < 1) {
-                                  return 'Please the amount should be greater than  5 USD';
+                                  return 'Please the amount should be greater than 1 USD';
                                 }
                                 return null;
                               },
@@ -243,7 +258,8 @@ class _CreateSecureSaveState extends State<CreateSecureSave> {
                       ),
                       const SizedBox(height: 15),
                       CustomButton(
-                        name: loading ? 'Loading...' : 'Create Now',
+                        name:
+                            loading && isSelected ? 'Loading...' : 'Create Now',
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             if (double.parse(ethConversion) <= nativeToken) {

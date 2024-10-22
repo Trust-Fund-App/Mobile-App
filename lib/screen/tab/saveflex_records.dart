@@ -12,7 +12,7 @@ import 'package:trustfund_app/provider/readcontract_service.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
-enum Frequency { single, daily, weekly, monthly }
+enum Frequency { once, daily, weekly, monthly }
 
 class SaveFlexRecords extends StatefulWidget {
   const SaveFlexRecords({super.key});
@@ -57,7 +57,7 @@ class _SaveFlexRecordsState extends State<SaveFlexRecords> {
   Frequency getFrequencyFromUint8(int value) {
     switch (value) {
       case 0:
-        return Frequency.single;
+        return Frequency.once;
       case 1:
         return Frequency.daily;
       case 2:

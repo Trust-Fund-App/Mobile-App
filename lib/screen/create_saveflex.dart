@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:particle_connect/model/wallet_type.dart';
 import 'package:particle_connect/particle_connect.dart';
@@ -17,7 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
-enum Frequency { single, daily, weekly, monthly }
+enum Frequency { once, daily, weekly, monthly }
 
 class AddSaveFlex extends StatefulWidget {
   const AddSaveFlex({super.key});
@@ -40,6 +41,8 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
   String ethConversion = '0';
   bool loading = false;
   bool isListerning = true;
+  bool isDurationSelected = false;
+  bool isFreqSelected = false;
   String? _dropdownDuration;
   Frequency? _dropdownFrequancy;
   late List<dynamic> savingsPlans;
@@ -93,6 +96,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
     if (selectedValue is String) {
       setState(() {
         _dropdownDuration = selectedValue;
+        isDurationSelected = true;
       });
     }
   }
@@ -101,6 +105,7 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
     if (selectedValue is Frequency) {
       setState(() {
         _dropdownFrequancy = selectedValue;
+        isFreqSelected = true;
       });
     }
   }
@@ -188,6 +193,14 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                                 iconEnabledColor: AppColor.primaryColor,
                               ),
                             ),
+                            if (!isDurationSelected)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 8.0, left: 5),
+                                child: Text(
+                                  "Please select your option",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
                             const SizedBox(height: 15),
 
                             // CustomTextField(
@@ -247,6 +260,14 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                                 iconEnabledColor: AppColor.primaryColor,
                               ),
                             ),
+                            if (!isFreqSelected)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 8.0, left: 5),
+                                child: Text(
+                                  "Please select your option",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
                             const SizedBox(height: 30),
 
                             const Text(
@@ -257,13 +278,17 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextField(
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[0-9]"))
+                              ],
                               controller: _amount,
                               hintText: "Amount in USD",
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter the Amount';
                                 } else if (int.parse(value) < 1) {
-                                  return 'Please the amount should be greater than  5 USD';
+                                  return 'Please the amount should be greater than 1 USD';
                                 }
                                 return null;
                               },
@@ -312,7 +337,9 @@ class _AddSaveFlexState extends State<AddSaveFlex> {
                       ),
                       const SizedBox(height: 15),
                       CustomButton(
-                        name: loading ? 'Loading...' : 'Create Now',
+                        name: loading && isDurationSelected && isFreqSelected
+                            ? 'Loading...'
+                            : 'Create Now',
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             if (double.parse(ethConversion) <= nativeToken) {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:particle_connect/model/wallet_type.dart';
 import 'package:particle_connect/particle_connect.dart';
@@ -16,8 +17,6 @@ import 'package:trustfund_app/widgets/payment_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
-
-enum Frequency { single, daily, weekly, monthly }
 
 class AddToFlexSave extends StatefulWidget {
   final String planId;
@@ -80,10 +79,6 @@ class _AddToFlexSaveState extends State<AddToFlexSave> {
     return type.index; // Dart enum index will match Solidity's uint8
   }
 
-  int getFrequencyValue(Frequency frequency) {
-    return frequency.index; // Dart enum index will match Solidity's uint8
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -136,13 +131,17 @@ class _AddToFlexSaveState extends State<AddToFlexSave> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextField(
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[0-9]"))
+                              ],
                               controller: _amount,
                               hintText: "Amount in USD",
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter the Amount';
                                 } else if (int.parse(value) < 1) {
-                                  return 'Please the amount should be greater than  5 USD';
+                                  return 'Please the amount should be greater than 1 USD';
                                 }
                                 return null;
                               },

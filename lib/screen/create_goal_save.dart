@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:particle_connect/model/wallet_type.dart';
 import 'package:particle_connect/particle_connect.dart';
@@ -17,7 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 enum SavingsPlanType { flexSave, secureSave, goalSave }
 
-enum Frequency { single, daily, weekly, monthly }
+enum Frequency { once, daily, weekly, monthly }
 
 class CreateGoalSave extends StatefulWidget {
   const CreateGoalSave({super.key});
@@ -45,6 +46,7 @@ class _CreateGoalSaveState extends State<CreateGoalSave> {
   String ethConversion = '0';
   bool loading = false;
   bool isListerning = true;
+  bool isSelected = false;
   //String? _dropdownDuration;
   Frequency? _dropdownFrequancy;
   late List<dynamic> savingsPlans;
@@ -113,6 +115,7 @@ class _CreateGoalSaveState extends State<CreateGoalSave> {
     if (selectedValue is Frequency) {
       setState(() {
         _dropdownFrequancy = selectedValue;
+        isSelected = true;
       });
     }
   }
@@ -197,6 +200,14 @@ class _CreateGoalSaveState extends State<CreateGoalSave> {
                                 iconEnabledColor: AppColor.primaryColor,
                               ),
                             ),
+                            if (!isSelected)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 8.0, left: 5),
+                                child: Text(
+                                  "Please select your option",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
                             const SizedBox(height: 15),
                             const Text(
                               'Title of your savings goal',
@@ -206,11 +217,15 @@ class _CreateGoalSaveState extends State<CreateGoalSave> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextField(
+                              keyboardType: TextInputType.name,
                               controller: _title,
                               hintText: "Eg. Rent, Fees, etc.",
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your savings title';
+                                } else if (value.length < 3 ||
+                                    value.length > 12) {
+                                  return 'Please your savings title should be at least 3 character.';
                                 }
                                 return null;
                               },
@@ -224,13 +239,17 @@ class _CreateGoalSaveState extends State<CreateGoalSave> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextField(
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[0-9]"))
+                              ],
                               controller: _targetAmount,
                               hintText: "Target Amount in USD",
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter the Amount';
                                 } else if (int.parse(value) < 1) {
-                                  return 'Please the amount should be greater than  5 USD';
+                                  return 'Please the amount should be greater than 1 USD';
                                 }
                                 return null;
                               },
@@ -244,13 +263,17 @@ class _CreateGoalSaveState extends State<CreateGoalSave> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextField(
+                              inputFormatter: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp("[0-9]"))
+                              ],
                               controller: _amount,
                               hintText: "Amount in USD",
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter the Amount';
                                 } else if (int.parse(value) < 1) {
-                                  return 'Please the amount should be greater than  5 USD';
+                                  return 'Please the amount should be greater than 1 USD';
                                 }
                                 return null;
                               },
@@ -299,7 +322,8 @@ class _CreateGoalSaveState extends State<CreateGoalSave> {
                       ),
                       const SizedBox(height: 15),
                       CustomButton(
-                        name: loading ? 'Loading...' : 'Create Now',
+                        name:
+                            loading && isSelected ? 'Loading...' : 'Create Now',
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             if (double.parse(ethConversion) <= nativeToken) {
