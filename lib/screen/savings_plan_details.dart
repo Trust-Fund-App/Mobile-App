@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:primer_progress_bar/primer_progress_bar.dart';
 import 'package:timestamp_to_string/timestamp_to_string.dart';
-import 'package:trustfund_app/screen/make_deposite.dart';
 import 'package:trustfund_app/widgets/load_widget.dart';
 import 'package:trustfund_app/styles/colors.dart';
 import 'package:trustfund_app/widgets/soon_alert.dart';
@@ -325,17 +324,18 @@ class _SavingsPlanDetailsState extends State<SavingsPlanDetails> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AddToFlexSave(
-                                          savingsPlan: widget.savingsPlan,
-                                          planId: widget.planId,
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                  onTap: infoDialog,
+                                  // onTap: () {
+                                  //   Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => AddToFlexSave(
+                                  //         savingsPlan: widget.savingsPlan,
+                                  //         planId: widget.planId,
+                                  //       ),
+                                  //     ),
+                                  //   );
+                                  // },
                                   child: Container(
                                     margin: const EdgeInsets.only(left: 20),
                                     height: 50,

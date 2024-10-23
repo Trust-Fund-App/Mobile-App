@@ -94,6 +94,7 @@ class _AddToFlexSaveState extends State<AddToFlexSave> {
   @override
   Widget build(BuildContext context) {
     logicProvider = Provider.of<ConnectLogicProvider>(context, listen: false);
+    print('Check Plan ID: ${widget.planId}');
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
